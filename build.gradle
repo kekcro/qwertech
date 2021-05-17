@@ -6,20 +6,19 @@ buildscript {
 			url = "https://gregtech.overminddl1.com/"
 		}
 		maven {
-			name = "forge"
-			url = "http://files.minecraftforge.net/maven"
-		}
-		maven {
 			name = "OC repo"
 			url = "http://maven.cil.li/"
 		}
-        maven {
-            name = "sonatype"
-            url = "https://oss.sonatype.org/content/repositories/snapshots/"
-        }
+		maven {
+			name = "jitpack"
+			url = "https://jitpack.io"
+		}
+		flatDir {
+			dirs "libs"
+		}
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+		classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
         classpath 'com.gregoriust.gregtech:gregtech_1.7.10:SNAPSHOT:dev'
     }
 }
@@ -33,9 +32,21 @@ idea{
 }
 
 repositories {
+	mavenCentral()
 	maven {
 		name = "gt"
 		url = "https://gregtech.overminddl1.com/"
+	}
+	maven {
+		name = "OC repo"
+		url = "http://maven.cil.li/"
+	}
+	maven {
+		name = "jitpack"
+		url = "https://jitpack.io"
+	}
+	flatDir {
+		dirs "libs"
 	}
 }
 
@@ -47,20 +58,19 @@ repositories {
 
 apply plugin: 'forge'
 
-version = "1.0.0-a.50"
+version = "1.0.0-a.51"
 group= "com.kbi.qwertech" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "qwertech"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-compileJava.options.bootClasspath = org.gradle.internal.jvm.Jvm.current().getJre().getHomeDir().toString() +"/lib/rt.jar"
+//compileJava.options.bootClasspath = org.gradle.internal.jvm.Jvm.current().getJre().getHomeDir().toString() +"/lib/rt.jar"
 compileJava {
 	options.encoding = "UTF-8"
 }
 
 minecraft {
     version = "1.7.10-10.13.4.1614-1.7.10"
-    runDir = "eclipse"
 }
 
 dependencies {

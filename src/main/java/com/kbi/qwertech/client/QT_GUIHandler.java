@@ -314,9 +314,9 @@ public class QT_GUIHandler {
 			}
 			
 			protec = 100 - protec;
-			
-			GL11.glColor4f(1, 1, 1, 1);
+			byte ordinal = 0;
 
+			GL11.glColor4f(1, 1, 1, 1);
 			if (QTConfigs.effectBackgroundType != -1) {
 			    String type = "rounded";
 			    switch(QTConfigs.effectBackgroundType)
@@ -328,10 +328,17 @@ public class QT_GUIHandler {
                         type = "circle";
                         break;
                 }
+
                 minecraft.renderEngine.bindTexture(backgroundIcons);
                 Float[] bgSpots = getUV(type + "Yellow");
-                renderIcon(x, y, 0, 2 + potions.length + extras, bgSpots, 20, 20);
-                renderIcon(x, y, 1, 2 + potions.length + extras, bgSpots, 20, 20);
+                if (QTConfigs.showArmor) {
+					renderIcon(x, y, ordinal, 2 + potions.length + extras, bgSpots, 20, 20);
+					ordinal++;
+				}
+                if (QTConfigs.showWeight) {
+					renderIcon(x, y, ordinal, 2 + potions.length + extras, bgSpots, 20, 20);
+					ordinal++;
+				}
 
                 for (int q = 0; q < potions.length; q++)
                 {
@@ -345,50 +352,57 @@ public class QT_GUIHandler {
                         } else {
                             bgSpots = getUV(type + "Green");
                         }
-                        renderIcon(x, y, 2 + q, 2 + potions.length + extras, bgSpots, 20, 20);
+                        renderIcon(x, y, ordinal + q, 2 + potions.length + extras, bgSpots, 20, 20);
                     }
                 }
                 if (minecraft.thePlayer.isBurning())
                 {
                     bgSpots = getUV(type + "Red");
-                    renderIcon(x, y, 2 + potions.length, 2 + potions.length + extras, bgSpots, 20, 20);
+                    renderIcon(x, y, ordinal + potions.length, 2 + potions.length + extras, bgSpots, 20, 20);
                 }
                 if (minecraft.thePlayer.isBlocking())
                 {
                     bgSpots = getUV(type + "White");
-                    renderIcon(x, y, 2 + potions.length + (minecraft.thePlayer.isBurning() ? 1 : 0), 2 + potions.length + extras, bgSpots, 20, 20);
+                    renderIcon(x, y, ordinal + potions.length + (minecraft.thePlayer.isBurning() ? 1 : 0), 2 + potions.length + extras, bgSpots, 20, 20);
                 }
                 if (minecraft.thePlayer.isSneaking())
                 {
                     bgSpots = getUV(type + "White");
-                    renderIcon(x, y, 2 + potions.length + (minecraft.thePlayer.isBurning() ? 1 : 0) + (minecraft.thePlayer.isBlocking() ? 1 : 0), 2 + potions.length + extras, bgSpots, 20, 20);
+                    renderIcon(x, y, ordinal + potions.length + (minecraft.thePlayer.isBurning() ? 1 : 0) + (minecraft.thePlayer.isBlocking() ? 1 : 0), 2 + potions.length + extras, bgSpots, 20, 20);
                 }
             }
 			
-			String protect = protec < 1? "shieldNone" : protec < 16 ? "shieldWood" : protec < 33 ? "shieldBronze" : protec < 50 ? "shieldIron" : "shieldPurple";
-			minecraft.renderEngine.bindTexture(armorIcons);
 			//minecraft.renderEngine.bindTexture(TextureMap.locationItemsTexture);
-			Float[] startSpots = getUV(protect);
-			renderIcon(x, y, 0, 2 + potions.length + extras, startSpots, 16, 16);
-
-			String weighty = weight < 1 ? "weightNone" : weight < 20 ? "weightLight" : weight < 40 ? "weightLittle" : weight < 70 ? "weightSignificant" : "weightMuch";
-			startSpots = getUV(weighty);
-			renderIcon(x, y, 1, 2 + potions.length + extras, startSpots, 16, 16);
+			minecraft.renderEngine.bindTexture(armorIcons);
+			Float[] startSpots;
+			ordinal = 0;
+			if (QTConfigs.showArmor) {
+				String protect = protec < 1 ? "shieldNone" : protec < 16 ? "shieldWood" : protec < 33 ? "shieldBronze" : protec < 50 ? "shieldIron" : "shieldPurple";
+				startSpots = getUV(protect);
+				renderIcon(x, y, ordinal, 2 + potions.length + extras, startSpots, 16, 16);
+				ordinal++;
+			}
+			if (QTConfigs.showWeight) {
+				String weighty = weight < 1 ? "weightNone" : weight < 20 ? "weightLight" : weight < 40 ? "weightLittle" : weight < 70 ? "weightSignificant" : "weightMuch";
+				startSpots = getUV(weighty);
+				renderIcon(x, y, ordinal, 2 + potions.length + extras, startSpots, 16, 16);
+				ordinal++;
+			}
 
             if (minecraft.thePlayer.isBurning())
             {
                 startSpots = getUV("burning");
-                renderIcon(x, y, 2 + potions.length, 2 + potions.length + extras, startSpots, 16, 16);
+                renderIcon(x, y, ordinal + potions.length, 2 + potions.length + extras, startSpots, 16, 16);
             }
             if (minecraft.thePlayer.isBlocking())
             {
                 startSpots = getUV("blocking");
-                renderIcon(x, y, 2 + potions.length + (minecraft.thePlayer.isBurning() ? 1 : 0), 2 + potions.length + extras, startSpots, 16, 16);
+                renderIcon(x, y, ordinal + potions.length + (minecraft.thePlayer.isBurning() ? 1 : 0), 2 + potions.length + extras, startSpots, 16, 16);
             }
             if (minecraft.thePlayer.isSneaking())
             {
                 startSpots = getUV("sneaking");
-                renderIcon(x, y, 2 + potions.length + (minecraft.thePlayer.isBurning() ? 1 : 0) + (minecraft.thePlayer.isBlocking() ? 1 : 0), 2 + potions.length + extras, startSpots, 16, 16);
+                renderIcon(x, y, ordinal + potions.length + (minecraft.thePlayer.isBurning() ? 1 : 0) + (minecraft.thePlayer.isBlocking() ? 1 : 0), 2 + potions.length + extras, startSpots, 16, 16);
             }
 
 			for (int q = 0; q < potions.length; q++)
@@ -404,7 +418,7 @@ public class QT_GUIHandler {
                         int startX = l % 8 * 18;
                         int startY = l / 8 * 18;
                         Float[] borders = new Float[]{startX * 0.00390625F, (198 + startY) * 0.00390625F, (18) * 0.00390625F, (18) * 0.00390625F};
-                        renderIcon(x, y, 2 + q, 2 + extras + potions.length, borders, 18, 18);
+                        renderIcon(x, y, ordinal + q, 2 + extras + potions.length, borders, 18, 18);
                     }
                 }
             }

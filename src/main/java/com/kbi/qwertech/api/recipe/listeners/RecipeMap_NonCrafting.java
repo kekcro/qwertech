@@ -26,8 +26,7 @@ public class RecipeMap_NonCrafting implements IRecipeMapHandler {
 	
 	protected boolean mAlreadyAddedAllRecipes = F;
 	
-	public RecipeMap_NonCrafting(Object aInput, Object aOutput, ICondition aCondition)
-	{
+	public RecipeMap_NonCrafting(Object aInput, Object aOutput, ICondition aCondition) {
 		this.mInput = aInput;
 		this.mOutput = aOutput;
 		this.mCondition = aCondition;
@@ -36,8 +35,7 @@ public class RecipeMap_NonCrafting implements IRecipeMapHandler {
 	}
 
 	@Override
-	public boolean addRecipesUsing(RecipeMap aMap, ItemStack aStack,
-			OreDictItemData aData) {
+	public boolean addRecipesUsing(RecipeMap aMap, boolean aNEI, ItemStack aStack, OreDictItemData aData) {
 		if (isDone()) return F;
 		if (isInputPrefix) {
 			return aData != null && aData.hasValidMaterialData() && aData.mPrefix == mInput && addRecipeForMaterial(aMap, aData.mMaterial.mMaterial);
@@ -48,12 +46,12 @@ public class RecipeMap_NonCrafting implements IRecipeMapHandler {
 	
 
 	@Override
-	public boolean addRecipesUsing(RecipeMap aMap, Fluid aFluid) {
-		return false;
+	public boolean addRecipesUsing(RecipeMap aMap, boolean aNEI, Fluid aFluid) {
+		return F;
 	}
 
 	@Override
-	public boolean addRecipesProducing(RecipeMap aMap, ItemStack aStack,
+	public boolean addRecipesProducing(RecipeMap aMap, boolean aNEI, ItemStack aStack,
 			OreDictItemData aData) {
 		if (isDone()) return F;
 		if (this.isOutputPrefix)
@@ -65,21 +63,21 @@ public class RecipeMap_NonCrafting implements IRecipeMapHandler {
 	}
 
 	@Override
-	public boolean addRecipesProducing(RecipeMap aMap, Fluid aFluid) {
+	public boolean addRecipesProducing(RecipeMap aMap, boolean aNEI, Fluid aFluid) {
 		// TODO Auto-generated method stub
-		return false;
+		return F;
 	}
 
 	@Override
 	public boolean containsInput(RecipeMap aMap, ItemStack aStack,
 			OreDictItemData aData) {
 		if (isDone()) return F;
-		return addRecipesUsing(aMap, aStack, aData);
+		return addRecipesUsing(aMap, F, aStack, aData);
 	}
 
 	@Override
 	public boolean containsInput(RecipeMap aMap, Fluid aFluid) {
-		return false;
+		return F;
 	}
 
 	@Override
@@ -113,7 +111,7 @@ public class RecipeMap_NonCrafting implements IRecipeMapHandler {
 
 	@Override
 	public boolean onAddedToMap(RecipeMap aMap) {
-		return true;
+		return T;
 	}
 	
 	public boolean addRecipeItemsOnly(RecipeMap aMap)

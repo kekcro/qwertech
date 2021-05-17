@@ -46,4 +46,6 @@ public class QTConfigs {
 	public static boolean effectUseDefault;
 	public static int effectDefaultInUse = 0;
 	public static int effectBackgroundType = 0;
+	public static boolean showArmor;
+	public static boolean showWeight;
 }
