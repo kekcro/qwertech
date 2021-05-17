@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
@@ -170,10 +171,6 @@ public class Material_Item_Renderer implements IItemRenderer {
 			{
 				switch (type) {
 			      case EQUIPPED:
-			      {		    	
-			    	renderModel(ingotRenderer, item, itemMat, (Entity)data[1], 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, new ResourceLocation("qwertech:textures/items/modeled/ingot.png"), 15, 0, -155, 0.5F, 0.20F, -0.03F);
-			    	break;
-			      }
 			      case EQUIPPED_FIRST_PERSON:
 			      {
 			    	renderModel(ingotRenderer, item, itemMat, (Entity)data[1], 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, new ResourceLocation("qwertech:textures/items/modeled/ingot.png"), 15, 0, -155, 0.5F, 0.20F, -0.03F);
@@ -186,10 +183,6 @@ public class Material_Item_Renderer implements IItemRenderer {
 			{
 				switch (type) {
 			      case EQUIPPED:
-			      {		    	
-			    	renderModel(gearRenderer, item, itemMat, (Entity)data[1], 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, new ResourceLocation("qwertech:textures/items/modeled/shovel.png"), 15, 0, -155, 0.5F, 0.20F, -0.03F);
-			    	break;
-			      }
 			      case EQUIPPED_FIRST_PERSON:
 			      {
 			    	renderModel(gearRenderer, item, itemMat, (Entity)data[1], 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F, new ResourceLocation("qwertech:textures/items/modeled/shovel.png"), 15, 0, -155, 0.5F, 0.20F, -0.03F);
@@ -238,7 +231,7 @@ public class Material_Item_Renderer implements IItemRenderer {
 	                float f2 = (j >> 8 & 255) / 255.0F;
 	                float f3 = (j & 255) / 255.0F;
 	                GL11.glColor4f(f5, f2, f3, 1.0F);
-	                RenderShortcuts.renderPlainItem((EntityLivingBase)data[1], item, i, type);
+	                RenderShortcuts.renderPlainItem((Entity) data[1], item, i, type);
 	            }
 			}
 		} else {
@@ -249,7 +242,7 @@ public class Material_Item_Renderer implements IItemRenderer {
                 float f2 = (j >> 8 & 255) / 255.0F;
                 float f3 = (j & 255) / 255.0F;
                 GL11.glColor4f(f5, f2, f3, 1.0F);
-                RenderShortcuts.renderPlainItem((EntityLivingBase)data[1], item, i, type);
+                RenderShortcuts.renderPlainItem((Entity) data[1], item, i, type);
             }
 		}
 		GL11.glPopMatrix();

@@ -1,3 +1,5 @@
+import org.gradle.internal.jvm.Jvm
+
 buildscript {
     repositories {
         mavenCentral()
@@ -64,7 +66,7 @@ archivesBaseName = "qwertech"
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
-//compileJava.options.bootClasspath = org.gradle.internal.jvm.Jvm.current().getJre().getHomeDir().toString() +"/lib/rt.jar"
+compileJava.options.bootClasspath = Jvm.current().getJre().getHomeDir().toString() +"/lib/rt.jar"
 compileJava {
 	options.encoding = "UTF-8"
 }

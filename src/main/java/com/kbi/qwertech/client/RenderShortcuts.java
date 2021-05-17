@@ -7,7 +7,9 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.ResourceLocation;
@@ -107,13 +109,17 @@ public class RenderShortcuts {
         OpenGlHelper.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
     }
 
-    public static void renderPlainItem(EntityLivingBase entity, ItemStack p_78443_2_, int p_78443_3_, ItemRenderType type)
+    public static void renderPlainItem(Entity entity, ItemStack p_78443_2_, int p_78443_3_, ItemRenderType type)
     {
         GL11.glPushMatrix();
 
         IIcon iicon = p_78443_2_.getItem().getIcon(p_78443_2_, p_78443_3_);
         if (entity != null) {
-            iicon = entity.getItemIcon(p_78443_2_, p_78443_3_);
+            if (entity instanceof EntityItem) {
+                iicon = ((EntityItem)entity).getEntityItem().getItem().getIcon(p_78443_2_, p_78443_3_);
+            } else {
+                iicon = ((EntityLivingBase)entity).getItemIcon(p_78443_2_, p_78443_3_);
+            }
         }
 
         if (iicon == null)
@@ -191,14 +197,13 @@ public class RenderShortcuts {
 
         FluidStack fluid = ((MultiItem)item.getItem()).getFluid(item);
 
+        Minecraft.getMinecraft().renderEngine.bindTexture(ITEM);
         if (fluid != null) {
-            Minecraft.getMinecraft().renderEngine.bindTexture(ITEM);
                 //System.out.println("l");
             int color = fluid.getFluid().getColor();
             GL11.glColor3ub((byte) (color >> 16 & 0xFF), (byte) (color >> 8 & 0xFF), (byte) (color & 0xFF));
             renderMask(item.getItem().getIcon(item, 1), fluid.getFluid().getIcon(), type);
         }
-        Minecraft.getMinecraft().renderEngine.bindTexture(ITEM);
 
         /*
         if (!type.equals(ItemRenderType.INVENTORY)) {
@@ -220,15 +225,22 @@ public class RenderShortcuts {
         //}
         postItemRender();
         GL11.glPopMatrix();
+        GL11.glPushMatrix();
+        if (type.equals(ItemRenderType.ENTITY)) {
+            GL11.glRotated(90, 0, 1, 0);
+            GL11.glScaled(0.75, 0.75, 0.75);
+            GL11.glTranslated(-0.5, -0.6, 0);
+        }
         int j = item.getItem().getColorFromItemStack(item, 0);
         float f5 = (j >> 16 & 255) / 255.0F;
         float f2 = (j >> 8 & 255) / 255.0F;
         float f3 = (j & 255) / 255.0F;
         GL11.glColor4f(f5, f2, f3, 1.0F);
         if (type != ItemRenderType.INVENTORY) {
-            renderPlainItem((EntityLivingBase) data[1], item, 0, type);
+            renderPlainItem((Entity) data[1], item, 0, type);
         } else {
             RenderItem.getInstance().renderIcon(0, 0, item.getItem().getIcon(item, 0), 16, 16);
         }
+        GL11.glPopMatrix();
     }
 }

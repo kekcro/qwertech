@@ -1,5 +1,6 @@
 package com.kbi.qwertech;
 
+import com.kbi.qwertech.api.data.QTConfigs;
 import com.kbi.qwertech.api.data.QTI;
 import com.kbi.qwertech.loaders.RegisterArmor;
 import com.kbi.qwertech.loaders.RegisterMobs;
@@ -194,9 +195,8 @@ public class CommonProxy extends Abstract_Proxy {
     }
     
     @SubscribeEvent
-    public void livingUpdated(LivingEvent.LivingUpdateEvent event)
-    {
-    	RegisterArmor.instance.updateEntityArmor(event);
+    public void livingUpdated(LivingEvent.LivingUpdateEvent event) {
+    	if (QTConfigs.enableArmor) RegisterArmor.instance.updateEntityArmor(event);
     }
     
     //@SubscribeEvent
@@ -413,7 +413,7 @@ public class CommonProxy extends Abstract_Proxy {
     public void onPlayerWorldInteraction(PlayerInteractEvent event)
     {
     	QwerTech.achievementHandler.onRightClick(event);
-    	RegisterArmor.instance.onClickedWearingArmor(event);
+    	if (QTConfigs.enableArmor) RegisterArmor.instance.onClickedWearingArmor(event);
     }
     
     //@SubscribeEvent

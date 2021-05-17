@@ -165,7 +165,7 @@ public class QT_GUIHandler {
 	public void onRendertext(RenderGameOverlayEvent.Text event)
 	{
 		Minecraft minecraft = Minecraft.getMinecraft();
-		if (QTConfigs.enableArmor && event.type == ElementType.TEXT)
+		if (event.type == ElementType.TEXT)
 		{
 			//event.setCanceled(true);
 			GL11.glEnable(GL11.GL_ALPHA_TEST);

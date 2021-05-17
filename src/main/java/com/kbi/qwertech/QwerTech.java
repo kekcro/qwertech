@@ -218,8 +218,10 @@ public final class QwerTech extends Abstract_Mod {
         QTConfigs.effectHorizontal = UI.get("effects_custom", "effectHorizontal", true, "If default is disabled, whether the icons will generate in a row left to right (true) or top to bottom (false)").setShowInGui(true).getBoolean(true);
         QTConfigs.effectRowLimit = UI.get("effects_custom", "effectRowLimit", 0, "If default is disabled, setting this to a value above 1 will generate a new row of icons after every so many icons.").setShowInGui(true).getInt(0);
         QTConfigs.effectBackgroundType = UI.get("effects", "effectOutline", 0, "-1 = no outline, 0 = rounded outline, 1 = square outline, 2 = circle outline").setShowInGui(true).getInt(0);
+		QTConfigs.showArmor = UI.get("effects", "showArmor", true, "Show the \"armor\" icon on the status HUD").setShowInGui(true).getBoolean(true);
+		QTConfigs.showWeight = UI.get("effects", "showWeight", true, "Show the \"weight\" icon on the status HUD").setShowInGui(true).getBoolean(true);
 
-        UI.save();
+		UI.save();
 	}
 
 	@Override
@@ -734,7 +736,7 @@ public final class QwerTech extends Abstract_Mod {
 			CR.shaped(machines.getItem(1252 + (q * 3)), new Object[]{"GCG", "PHP", 'C', machines.getItem(669 + (q * 3)), 'P', ST.make(block, 1, 1), 'H', OD.craftingChest, 'G', OD.slimeball});
 		}
 
-		RegisterArmor.instance.addUpgrades();
+		if (QTConfigs.enableArmor) RegisterArmor.instance.addUpgrades();
 
 		CraftingManagerHammer.replacems.put(ST.make(Items.feather, 1, 0), "itemFeather");
 		CraftingManagerHammer.replacems.put(ST.make(Blocks.chest, 1, 0), "craftingChest");
