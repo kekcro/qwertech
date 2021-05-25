@@ -3,6 +3,7 @@ package com.kbi.qwertech.loaders;
 import com.kbi.qwertech.api.armor.IArmorStats;
 import com.kbi.qwertech.api.armor.MultiItemArmor;
 import com.kbi.qwertech.api.armor.upgrades.IArmorUpgrade;
+import com.kbi.qwertech.api.data.QTConfigs;
 import com.kbi.qwertech.api.data.QTI;
 import com.kbi.qwertech.api.registry.ArmorUpgradeRegistry;
 import com.kbi.qwertech.armor.*;
@@ -24,6 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent.SetArmorModel;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.oredict.OreDictionary;
@@ -360,5 +362,14 @@ public class RegisterArmor {
 			System.out.println("Error while calculating or applying armor weight for entity");
 			e.printStackTrace();
 		}
+	}
+
+	public OreDictMaterial[] populateArmorList() {
+		List<OreDictMaterial> mats = new ArrayList<>();
+		for (String s : QTConfigs.armorList) {
+			OreDictMaterial mat = OreDictMaterial.get(s);
+			if (mat != MT.NULL) mats.add(mat);
+		}
+		return mats.toArray(new OreDictMaterial[0]);
 	}
 }

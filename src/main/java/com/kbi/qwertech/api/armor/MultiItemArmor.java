@@ -4,6 +4,7 @@ import com.kbi.qwertech.api.armor.upgrades.IArmorUpgrade;
 import com.kbi.qwertech.api.armor.upgrades.IThaumcraftUpgrade;
 import com.kbi.qwertech.api.client.models.ModelArmorBasic;
 import com.kbi.qwertech.api.registry.ArmorUpgradeRegistry;
+import com.kbi.qwertech.loaders.RegisterArmor;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -917,7 +918,7 @@ public class MultiItemArmor extends ItemArmor implements IItemProjectile, IItemU
 	@Override
 	@SideOnly(Side.CLIENT)
 	public final void getSubItems(Item var1, CreativeTabs aCreativeTab, List aList) {
-		OreDictMaterial[] example = new OreDictMaterial[]{MT.Al, MT.Bronze, MT.Cu, MT.Electrum, MT.Au, MT.Fe, MT.Pb, MT.Ni, MT.ObsidianSteel, MT.Plastic, MT.Rubber, MT.Steel, MT.Ti, MT.U_235, MT.Vibramantium, MT.WroughtIron};
+		OreDictMaterial[] example = RegisterArmor.instance.populateArmorList();
 		for (int i = 0; i < 32766; i+=1) if (getArmorStats(ST.make(this, 1, i)) != null) {
 			ItemStack tStack = ST.make(this, 1, i);
 			isItemStackUsable(tStack);
