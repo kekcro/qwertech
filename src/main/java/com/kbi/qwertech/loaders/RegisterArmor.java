@@ -1,13 +1,14 @@
 package com.kbi.qwertech.loaders;
 
+import com.google.gson.*;
 import com.kbi.qwertech.api.armor.IArmorStats;
 import com.kbi.qwertech.api.armor.MultiItemArmor;
 import com.kbi.qwertech.api.armor.upgrades.IArmorUpgrade;
-import com.kbi.qwertech.api.data.QTConfigs;
 import com.kbi.qwertech.api.data.QTI;
 import com.kbi.qwertech.api.registry.ArmorUpgradeRegistry;
 import com.kbi.qwertech.armor.*;
 import com.kbi.qwertech.armor.upgrades.*;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
@@ -15,6 +16,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.data.*;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.util.ST;
+import gregapi.util.UT;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.enchantment.Enchantment;
@@ -25,12 +27,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderPlayerEvent.SetArmorModel;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +47,7 @@ public class RegisterArmor {
 	public static HashMap<String, Object> iconTitle = new HashMap();
 	private static List<String> types = new ArrayList();
 	public static RegisterArmor instance;
+	Logger L = LogManager.getLogger("QwerTech");
 	
 	public RegisterArmor()
 	{
@@ -364,11 +371,52 @@ public class RegisterArmor {
 		}
 	}
 
+	boolean firstPass = true;
+
 	public OreDictMaterial[] populateArmorList() {
+		Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+		JsonArray defaults = GSON.fromJson("[\"Aluminium\", \"Bronze\", \"Copper\", \"Electrum\", \"Gold\", \"Iron\", \"Lead\", \"Nickel\", \"Obsidian Steel\", \"Plastic\", \"Rubber\", \"Steel\", \"Titanium\", \"Uranium-235\", \"Vibramantium\", \"Wrought Iron\"]", JsonArray.class);
+		Path dir = Loader.instance().getConfigDir().toPath().resolve("gregtech/ArmorList.json");
+		try {
+			boolean changed = false;
+			File file = dir.toFile();
+			if (Files.notExists(dir) && !file.createNewFile()) {
+				throw new IOException("[QwerTech] Can't create ArmorList config file! Using defaults.");
+			}
+			FileInputStream is = new FileInputStream(file);
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			JsonObject json = GSON.fromJson(br, JsonObject.class);
+			if (json == null) {
+				changed = true;
+				json = new JsonObject();
+				json.addProperty("comment", "The Tools Creative Tab is populated with armors based on these aNameOreDict entries. Look at MT.java to find the correct values.");
+				json.add("list", defaults);
+			}
+
+			if (changed) {
+				FileWriter fw = new FileWriter(file, false);
+				fw.write(GSON.toJson(json));
+				fw.close();
+			}
+
+			JsonArray list = json.getAsJsonArray("list");
+			return toArray(list);
+
+		} catch (IOException e) {
+			L.error(e.getMessage());
+			return toArray(defaults);
+		} finally {
+			firstPass = false;
+		}
+	}
+
+	private OreDictMaterial[] toArray(JsonArray list) {
 		List<OreDictMaterial> mats = new ArrayList<>();
-		for (String s : QTConfigs.armorList) {
-			OreDictMaterial mat = OreDictMaterial.get(s);
+		for (JsonElement e : list) {
+			String aNOD = UT.Code.capitalise(e.getAsString().replaceAll(" ", "").replaceAll("-", "").replaceAll("'", "").replaceAll("/", ""));
+			OreDictMaterial mat = OreDictMaterial.get(aNOD);
 			if (mat != MT.NULL) mats.add(mat);
+			else if (firstPass) L.warn("[QwerTech] The armor material specified as \"{}\" does not appear to exist. Skipping!", e.getAsString());
 		}
 		return mats.toArray(new OreDictMaterial[0]);
 	}

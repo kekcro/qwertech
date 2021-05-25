@@ -200,10 +200,7 @@ public final class QwerTech extends Abstract_Mod {
 		QTConfigs.enableTools = tSections.get("tools", "enableTools", true, "Allow the creation of QwerTech tools like maces and mattocks").setShowInGui(true).getBoolean(true);
 		
 		QTConfigs.enableArmor = tSections.get("armor", "enableArmor", true, "Allow the creation of QwerTech armor").setShowInGui(true).getBoolean(true);
-		QTConfigs.armorList = tSections.get("armor", "armorList",
-				new String[]{"Aluminium", "Bronze", "Copper", "Electrum", "Gold", "Iron", "Lead", "Nickel", "Obsidian Steel", "Plastic", "Rubber", "Steel", "Titanium", "Uranium-235", "Vibramantium", "Wrought Iron"},
-				"Populates the Tools Creative Tab with armors based on these aNameOreDict entries. Look at MT.java to find out the correct values.").setShowInGui(true).getStringList();
-		
+
 		tSections.save();
 
 		Configuration UI = new Configuration(new File(CS.DirectoriesGT.CONFIG_GT, "QT_UI_Display.cfg"));
