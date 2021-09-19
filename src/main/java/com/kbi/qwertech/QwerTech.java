@@ -21,6 +21,7 @@ import com.kbi.qwertech.items.behavior.Dispenser_Shuriken;
 import com.kbi.qwertech.items.stats.*;
 import com.kbi.qwertech.loaders.*;
 import com.kbi.qwertech.loaders.mod.ModLoadBase;
+import com.kbi.qwertech.mixins.QwertechMixinPlugin;
 import com.kbi.qwertech.network.packets.PacketInventorySync;
 import com.kbi.qwertech.tileentities.*;
 import cpw.mods.fml.common.Mod;
@@ -89,7 +90,7 @@ import static gregapi.data.TD.Properties.HAS_TOOL_STATS;
 		, @Interface(iface = "ic2.api.item.IElectricItemManager", modid = ModIDs.IC2)
 		, @Interface(iface = "micdoodle8.mods.galacticraft.api.item.IItemElectric", modid = ModIDs.GC)
 		})
-@Mod(modid=QwerTech.MODID, name=QwerTech.MODNAME, version=QwerTech.VERSION, dependencies="required-after:gregapi_post; after:gregtech")
+@Mod(modid=QwerTech.MODID, name=QwerTech.MODNAME, version=QwerTech.VERSION, dependencies="required-after:gregapi_post; after:gregtech; after:Techguns; after:spongemixins@[1.1.0,);")
 public final class QwerTech extends Abstract_Mod {
     public static final String MODID = "qwertech";
     public static final String MODNAME = "QwerTech";
@@ -170,7 +171,7 @@ public final class QwerTech extends Abstract_Mod {
 		QTConfigs.anyHammers = tMainConfig.get("recipes", "PutPlateHammeringBackInCraftingTable", false, "Set to true to disable QwerTech from moving plate-hammering, gem-smashing, and related basic recipes to the crafting anvils").setShowInGui(true).getBoolean(false);
 		QTConfigs.chemicalXRandom = tMainConfig.get("recipes", "ElectrolyzeChemicalX", true, "Set to false to eliminate the Utonium Volatility Process").setShowInGui(true).getBoolean(true);
 
-		tMainConfig.save();
+		if (tMainConfig.hasChanged()) tMainConfig.save();
 		
 		Configuration t3DConfig = new Configuration(new File(CS.DirectoriesGT.CONFIG_GT, "3Ditems.cfg"));
 		t3DConfig.load();
@@ -179,14 +180,14 @@ public final class QwerTech extends Abstract_Mod {
 		QTConfigs.add3DQwerTools = t3DConfig.get("general", "Add3DQwerTools", true, "Add 3D models for new QwerTech tools").setShowInGui(true).getBoolean(true);
 		QTConfigs.add3DPrefixes = t3DConfig.get("general", "Add3DPrefixes", true, "Add 3D Models for OreDictPrefix objects (tool heads, ingots, rods, etc.)").setShowInGui(true).getBoolean(true);
 		
-		t3DConfig.save();
+		if (t3DConfig.hasChanged()) t3DConfig.save();
 		
 		Configuration tCompat = new Configuration(new File(CS.DirectoriesGT.CONFIG_GT, "QTCompat.cfg"));
 		tCompat.load();
 		
 		QTConfigs.overwriteJourneyMap = tCompat.get("journeymap", "OverwriteIcons", true, "Overwrite JourneyMap icons on load").setShowInGui(true).getBoolean(true);
 		
-		tCompat.save();
+		if (tCompat.hasChanged()) tCompat.save();
 		
 		Configuration tSections = new Configuration(new File(CS.DirectoriesGT.CONFIG_GT, "QTModules.cfg"));
 		tSections.load();
@@ -201,7 +202,7 @@ public final class QwerTech extends Abstract_Mod {
 		
 		QTConfigs.enableArmor = tSections.get("armor", "enableArmor", true, "Allow the creation of QwerTech armor").setShowInGui(true).getBoolean(true);
 
-		tSections.save();
+		if (tSections.hasChanged()) tSections.save();
 
 		Configuration UI = new Configuration(new File(CS.DirectoriesGT.CONFIG_GT, "QT_UI_Display.cfg"));
 		UI.load();
@@ -221,7 +222,7 @@ public final class QwerTech extends Abstract_Mod {
 		QTConfigs.showArmor = UI.get("effects", "showArmor", true, "Show the \"armor\" icon on the status HUD").setShowInGui(true).getBoolean(true);
 		QTConfigs.showWeight = UI.get("effects", "showWeight", true, "Show the \"weight\" icon on the status HUD").setShowInGui(true).getBoolean(true);
 
-		UI.save();
+		if (UI.hasChanged()) UI.save();
 	}
 
 	@Override
@@ -501,6 +502,7 @@ public final class QwerTech extends Abstract_Mod {
 
 	@Override
 	public void onModInit2(FMLInitializationEvent aEvent) {
+	    QTMT.init();
 		achievementHandler = new RegisterAchievements();
     	//MinecraftForge.EVENT_BUS.register(achievementHandler);
         //FMLCommonHandler.instance().bus().register(this);

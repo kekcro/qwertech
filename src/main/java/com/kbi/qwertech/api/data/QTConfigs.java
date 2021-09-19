@@ -48,4 +48,6 @@ public class QTConfigs {
 	public static int effectBackgroundType = 0;
 	public static boolean showArmor;
 	public static boolean showWeight;
+
+	public static boolean patchTechgunsAutoFeeder, patchTechgunsCrash, patchImmibisAutoFeeder;
 }

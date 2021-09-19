@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "minVersion": "0.7.11",
+  "package": "com.kbi.qwertech.mixins",
+  "plugin": "com.kbi.qwertech.mixins.QwertechMixinPlugin",
+  "refmap": "mixins.qwertech.refmap.json",
+  "target": "@env(DEFAULT)",
+  "compatibilityLevel": "JAVA_8"
+}
