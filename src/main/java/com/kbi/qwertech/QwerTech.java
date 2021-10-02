@@ -186,7 +186,8 @@ public final class QwerTech extends Abstract_Mod {
 		tCompat.load();
 		
 		QTConfigs.overwriteJourneyMap = tCompat.get("journeymap", "OverwriteIcons", true, "Overwrite JourneyMap icons on load").setShowInGui(true).getBoolean(true);
-		
+		QTConfigs.enableNEIBumbleBreeding = tCompat.get("notenoughitems", "EnableBumbleBreedingInfo", true, "Expose top secret information about Bumbles. The government doesn't want you to know this!").setShowInGui(true).getBoolean(true);
+
 		if (tCompat.hasChanged()) tCompat.save();
 		
 		Configuration tSections = new Configuration(new File(CS.DirectoriesGT.CONFIG_GT, "QTModules.cfg"));

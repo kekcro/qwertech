@@ -19,7 +19,7 @@ import static com.kbi.qwertech.mixins.QwertechMixinPlugin.L;
 public class Config {
     //forge's cfg refuses to dump itself to file at this point, so I'll just use a better format
     private static void handleConfig(Map<String, String> cfg) {
-        QTConfigs.patchTechgunsAutoFeeder = getBool("patchTechgunsAutoFeeder", cfg);
+        QTConfigs.patchTechgunsAutoFeeder = getBool("patchTechgunsAutofeeder", cfg);
         QTConfigs.patchTechgunsCrash = getBool("patchTechgunsCrash", cfg);
         QTConfigs.patchImmibisAutoFeeder = getBool("patchImmibisAutoFeeder", cfg);
     }
@@ -34,7 +34,12 @@ public class Config {
                 Entry.of("patchImmibisAutoFeeder", true,
                         "patchImmibisAutoFeeder: Makes the Immibis' AutoFeeder accept and consume Gregtech foods. [Side: SERVER | Default: true]")
         );
-        Path configPath = Launch.minecraftHome.toPath().resolve("config").resolve("gregtech").resolve("QTMixins.properties");
+        Path configPath;
+        try {
+            configPath = Launch.minecraftHome.toPath().resolve("config").resolve("gregtech").resolve("QTMixins.properties");
+        } catch (NullPointerException e) {
+            configPath = new File(".", "config/gregtech/QTMixins.properties").toPath();
+        }
         try {
             boolean changed = false;
             File configurationFile = configPath.toFile();

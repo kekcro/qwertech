@@ -1,6 +1,7 @@
 package com.kbi.qwertech.loaders.mod;
 
 import com.kbi.qwertech.QwerTech;
+import com.kbi.qwertech.api.data.QTConfigs;
 import com.kbi.qwertech.tileentities.CraftingTableT1.GUIClientAdvancedCraftingTable;
 import com.kbi.qwertech.tileentities.CraftingTableT2.GUIClientAdvancedCraftingTable2;
 import cpw.mods.fml.common.Optional.Interface;
@@ -28,6 +29,7 @@ public class NEI_QT_Config implements codechicken.nei.api.IConfigureNEI
 	  new NEI_Hammer_Handler();
 	  new NEI_Wood_Handler();
 	  new NEI_3D_Handler();
+	  if (QTConfigs.enableNEIBumbleBreeding) new NEI_Bumble_Handler();
 	  NEI_RecipeMap chisel = new NEI_RecipeMap(RM.Chisel);
 	  FMLInterModComms.sendRuntimeMessage(GAPI, "NEIPlugins", "register-crafting-handler", MD.GAPI.mID+"@"+chisel.getRecipeName()+"@"+chisel.getOverlayIdentifier());
 	  codechicken.nei.recipe.GuiCraftingRecipe.craftinghandlers.add(chisel);

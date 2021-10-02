@@ -13,7 +13,7 @@ public class QTConfigs {
 	
 	public static boolean addDungeonTools;
 	
-	public static boolean overwriteJourneyMap;
+	public static boolean overwriteJourneyMap, enableNEIBumbleBreeding;
 	
 	public static boolean removeVanillaCrafting;
 	public static boolean allHammers;
