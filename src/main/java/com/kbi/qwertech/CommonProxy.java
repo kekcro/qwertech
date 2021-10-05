@@ -3,6 +3,7 @@ package com.kbi.qwertech;
 import com.kbi.qwertech.api.data.QTConfigs;
 import com.kbi.qwertech.api.data.QTI;
 import com.kbi.qwertech.loaders.RegisterArmor;
+import com.kbi.qwertech.loaders.RegisterBumbles;
 import com.kbi.qwertech.loaders.RegisterMobs;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.event.*;
@@ -11,11 +12,17 @@ import gregapi.api.Abstract_Mod;
 import gregapi.api.Abstract_Proxy;
 import gregapi.data.CS;
 import gregapi.data.OP;
+import gregapi.item.bumble.IItemBumbleBee;
 import gregapi.item.multiitem.MultiItemTool;
 import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.util.UT;
+import gregapi.util.WD;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.CommandEvent;
@@ -35,6 +42,8 @@ import net.minecraftforge.event.entity.minecart.MinecartUpdateEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.terraingen.*;
 import net.minecraftforge.event.world.*;
+
+import static gregapi.data.CS.T;
 
 
 /**
@@ -70,6 +79,7 @@ public class CommonProxy extends Abstract_Proxy {
 		MinecraftForge.EVENT_BUS.register(this);
         FMLCommonHandler.instance().bus().register(this);
 		//this allows it to read game events for other classes without having to be added unnecessarily to all the game building events.
+      if (QTConfigs.customBumbles) RegisterBumbles.bakeParentData();
 	}
     @Override
 	public void onProxyAfterServerStarting	(Abstract_Mod aMod, FMLServerStartingEvent		aEvent) {/**/}
@@ -414,6 +424,16 @@ public class CommonProxy extends Abstract_Proxy {
     {
     	QwerTech.achievementHandler.onRightClick(event);
     	if (QTConfigs.enableArmor) RegisterArmor.instance.onClickedWearingArmor(event);
+        if (event.entityPlayer.getHeldItem() != CS.NI && event.entityPlayer.getHeldItem().getItem() instanceof IItemBumbleBee) {
+          if (IItemBumbleBee.Util.getBumbleTag(event.entityPlayer.getHeldItem()).hasNoTags()) {
+            EntityPlayer player = event.entityPlayer;
+            World world = player.worldObj;
+            BiomeGenBase biome = world.getBiomeGenForCoords((int) player.posX, (int) player.posZ);
+            long temp = WD.envTemp(biome);
+            NBTTagCompound genes = IItemBumbleBee.Util.getBumbleGenes(temp, biome, T, CS.RNGSUS);
+            IItemBumbleBee.Util.setBumbleTag(event.entityPlayer.getHeldItem(), genes);
+          }
+        }
     }
     
     //@SubscribeEvent
@@ -443,10 +463,8 @@ public class CommonProxy extends Abstract_Proxy {
     @SubscribeEvent
     public void onPlayerItemUseFinish(PlayerUseItemEvent.Finish event)
     {
-    	if (event.item != null && event.item.getItem() == CS.ToolsGT.sMetaTool && event.item.getItemDamage() == CS.ToolsGT.WRENCH)
-        {
-          if (event.entityPlayer != null)
-          {
+    	if (event.item != null && event.entityPlayer != null) {
+    	  if (event.item.getItem() == CS.ToolsGT.sMetaTool && event.item.getItemDamage() == CS.ToolsGT.WRENCH) {
             int previousSlot = event.entityPlayer.inventory.currentItem - 1;
             if (previousSlot > -1) {
               ItemStack previous = event.entityPlayer.inventory.getStackInSlot(previousSlot);

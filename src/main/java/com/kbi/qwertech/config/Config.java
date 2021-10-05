@@ -2,7 +2,6 @@ package com.kbi.qwertech.config;
 
 import com.google.common.collect.ImmutableSet;
 import com.kbi.qwertech.api.data.QTConfigs;
-import cpw.mods.fml.common.Loader;
 import net.minecraft.launchwrapper.Launch;
 
 import java.io.*;
@@ -22,6 +21,7 @@ public class Config {
         QTConfigs.patchTechgunsAutoFeeder = getBool("patchTechgunsAutofeeder", cfg);
         QTConfigs.patchTechgunsCrash = getBool("patchTechgunsCrash", cfg);
         QTConfigs.patchImmibisAutoFeeder = getBool("patchImmibisAutoFeeder", cfg);
+        QTConfigs.customBumblesMixins = getBool("customBumblesMixins", cfg);
     }
 
     public static void init() {
@@ -32,7 +32,10 @@ public class Config {
                 Entry.of("patchTechgunsCrash", true,
                         "patchTechgunsCrash: Prevents world corruption caused by entities touching exposed live wires. [Side: SERVER | Default: true]"),
                 Entry.of("patchImmibisAutoFeeder", true,
-                        "patchImmibisAutoFeeder: Makes the Immibis' AutoFeeder accept and consume Gregtech foods. [Side: SERVER | Default: true]")
+                        "patchImmibisAutoFeeder: Makes the Immibis' AutoFeeder accept and consume Gregtech foods. [Side: SERVER | Default: true]"),
+                Entry.of("customBumblesMixins", true,
+                        "customBumblesMixins: Complimentary Mixins for the Custom Bumblebee functionality. [Side: BOTH | Default: true]")
+
         );
         Path configPath;
         try {

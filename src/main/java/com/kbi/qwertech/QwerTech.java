@@ -21,7 +21,6 @@ import com.kbi.qwertech.items.behavior.Dispenser_Shuriken;
 import com.kbi.qwertech.items.stats.*;
 import com.kbi.qwertech.loaders.*;
 import com.kbi.qwertech.loaders.mod.ModLoadBase;
-import com.kbi.qwertech.mixins.QwertechMixinPlugin;
 import com.kbi.qwertech.network.packets.PacketInventorySync;
 import com.kbi.qwertech.tileentities.*;
 import cpw.mods.fml.common.Mod;
@@ -202,6 +201,8 @@ public final class QwerTech extends Abstract_Mod {
 		QTConfigs.enableTools = tSections.get("tools", "enableTools", true, "Allow the creation of QwerTech tools like maces and mattocks").setShowInGui(true).getBoolean(true);
 		
 		QTConfigs.enableArmor = tSections.get("armor", "enableArmor", true, "Allow the creation of QwerTech armor").setShowInGui(true).getBoolean(true);
+
+		QTConfigs.customBumbles = tSections.get("bumblebees", "customBumbles", true, "Lets you add custom Bumbles to the game.").setShowInGui(true).getBoolean(true);
 
 		if (tSections.hasChanged()) tSections.save();
 

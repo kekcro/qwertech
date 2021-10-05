@@ -2,8 +2,6 @@ package com.kbi.qwertech.mixins;
 
 import com.kbi.qwertech.api.data.QTConfigs;
 import com.kbi.qwertech.config.Config;
-import gregapi.data.CS;
-import net.minecraftforge.common.config.Configuration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.lib.tree.ClassNode;
@@ -12,7 +10,6 @@ import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import ru.timeconqueror.spongemixins.MinecraftURLClassPath;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class QwertechMixinPlugin implements IMixinConfigPlugin {
@@ -46,6 +43,7 @@ public class QwertechMixinPlugin implements IMixinConfigPlugin {
         if (QTConfigs.patchTechgunsAutoFeeder) load(mixins, loadedMods, "Techguns", "techguns.SlotFoodMixin", "techguns.TechgunsMixin", "techguns.TechgunsTickHandlerMixin");
         if (QTConfigs.patchTechgunsCrash) load(mixins, loadedMods, "Techguns", "techguns.TechgunsEventhandlerMixin");
         if (QTConfigs.patchImmibisAutoFeeder) load(mixins, loadedMods, "autofood", "autofood.AutoFeederTileMixin");
+        //if (QTConfigs.customBumblesMixins) { load(mixins, loadedMods, "gregtech", "gregtech.MultiItemBumblesMixin"); }
 
         return mixins;
     }

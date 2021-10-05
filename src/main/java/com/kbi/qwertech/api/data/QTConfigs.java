@@ -49,5 +49,5 @@ public class QTConfigs {
 	public static boolean showArmor;
 	public static boolean showWeight;
 
-	public static boolean patchTechgunsAutoFeeder, patchTechgunsCrash, patchImmibisAutoFeeder;
+	public static boolean patchTechgunsAutoFeeder, patchTechgunsCrash, patchImmibisAutoFeeder, customBumbles, customBumblesMixins;
 }

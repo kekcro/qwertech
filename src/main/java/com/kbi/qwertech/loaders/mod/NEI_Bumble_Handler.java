@@ -5,19 +5,23 @@ import codechicken.nei.recipe.GuiCraftingRecipe;
 import codechicken.nei.recipe.GuiUsageRecipe;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.kbi.qwertech.QwerTech;
+import com.kbi.qwertech.api.data.QTConfigs;
 import cpw.mods.fml.common.event.FMLInterModComms;
+import gregapi.data.CS;
 import gregapi.data.MD;
 import gregapi.lang.LanguageHandler;
 import gregapi.util.ST;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static codechicken.lib.render.FontUtils.drawCenteredString;
+import static com.kbi.qwertech.loaders.RegisterBumbles.*;
 
 public class NEI_Bumble_Handler extends TemplateRecipeHandler {
-    public static List<CachedMutationRecipe> mutations = new ArrayList<>();
 
     public NEI_Bumble_Handler() {
         if (!NEI_QT_Config.sIsAdded) {
@@ -25,7 +29,6 @@ public class NEI_Bumble_Handler extends TemplateRecipeHandler {
             FMLInterModComms.sendRuntimeMessage(QwerTech.instance, "NEIPlugins", "register-crafting-handler", QwerTech.MODID + "@" + getRecipeName() + "@" + getOverlayIdentifier());
             GuiCraftingRecipe.craftinghandlers.add(this);
             GuiUsageRecipe.usagehandlers.add(this);
-            populateRecipes();
         }
     }
 
@@ -51,7 +54,7 @@ public class NEI_Bumble_Handler extends TemplateRecipeHandler {
 
     @Override
     public void loadCraftingRecipes(ItemStack result) {
-        for (CachedMutationRecipe recipe : mutations) {
+        for (CachedMutationRecipe recipe : getMutations()) {
             if (recipe.getResult().contains(result)) {
                 arecipes.add(recipe);
             }
@@ -60,7 +63,7 @@ public class NEI_Bumble_Handler extends TemplateRecipeHandler {
 
     @Override
     public void loadUsageRecipes(ItemStack ingredient) {
-        for (CachedMutationRecipe recipe : mutations) {
+        for (CachedMutationRecipe recipe : getMutations()) {
             if (recipe.contains(recipe.getIngredients(), ingredient)) {
                 arecipes.add(recipe);
             }
@@ -76,7 +79,10 @@ public class NEI_Bumble_Handler extends TemplateRecipeHandler {
         drawCenteredString((rec.chance / 10 + "%").replace(".0", ""), 105, 26, 0x151515);
     }
 
-    private void populateRecipes() {
+    private List<CachedMutationRecipe> getMutations() {
+        List<CachedMutationRecipe> list = new ArrayList<>();
+        Item gtBumble = ST.item(MD.GT, CS.ItemsGT.BUMBLEBEES.getUnlocalizedName());
+        Item qtBumble = ST.item(MD.QT, CUSTOM_BUMBLES.getUnlocalizedName());
         int[] baseSpecies = new int[]{0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 10000, 10100, 10200, 10300, 10400, 10500, 20000, 20100, 20200, 20300};
         for (int p1 : baseSpecies) {
             for (int i = 0; i < 40; i += 10) {
@@ -92,35 +98,57 @@ public class NEI_Bumble_Handler extends TemplateRecipeHandler {
                         if (child == parent1 || child == parent2) continue;
 
                         CachedMutationRecipe recipe = new CachedMutationRecipe(
-                                toLS(parent1, 1, 21, 14),
-                                toLS(parent2, 0, 75, 14),
-                                toLS(child, 2, 129, 14),
+                                toLS(new ParentData(gtBumble, (short) parent1), 1, 21, 14),
+                                toLS(new ParentData(gtBumble, (short) parent2), 0, 75, 14),
+                                toLS(new ParentData(gtBumble, (short) child), 2, 129, 14),
                                 mutationChance(child)
                         );
-                        if (!mutations.contains(recipe)) {
-                            mutations.add(recipe);
+                        if (!list.contains(recipe)) {
+                            list.add(recipe);
                         }
                     }
                 }
             }
         }
-    }
+        if (QTConfigs.customBumbles) {
+            for (Map.Entry<Short, BumbleData> e : CUSTOM_BUMBLE_DATA.entrySet()) {
+                BumbleData data = e.getValue();
+                ParentData parent1;
+                ParentData parent2;
+                short child = e.getKey();
+                if (data.parents != null) {
+                    parent1 = data.parents[0];
+                    parent2 = data.parents[1];
+                } else if ((child / 10) % 10 > 0) {
+                    parent1 = new ParentData(qtBumble, (short) (child - 10));
+                    parent2 = parent1;
+                } else continue;
 
-    private ItemStack toBumble(int species, int type) {
-        return ST.make(ST.item(MD.GT, "gt.multiitem.bumblebee"), 1, species + type);
-    }
-
-    private List<ItemStack> toBumbles(int species, int... types) {
-        List<ItemStack> list = new ArrayList<>();
-        for (int type : types) {
-            list.add(toBumble(species, type));
+                CachedMutationRecipe recipe = new CachedMutationRecipe(
+                        toLS(parent1, 1, 21, 14),
+                        toLS(parent2, 0, 75, 14),
+                        toLS(new ParentData(qtBumble, child), 2, 129, 14),
+                        mutationChance(child)
+                );
+                if (!list.contains(recipe)) {
+                    list.add(recipe);
+                }
+            }
         }
         return list;
     }
 
-    private LabeledStack toLS(int species, int display, int x, int y) {
-        ItemStack bumble = toBumble(species, display);
-        return new LabeledStack(toBumbles(species, 0, 1, 2, 5, 6, 7), x, y, LanguageHandler.translate(bumble.getUnlocalizedName()), 19);
+    private List<ItemStack> toBumbles(ParentData data, int... types) {
+        List<ItemStack> list = new ArrayList<>();
+        for (int type : types) {
+            list.add(ST.make(data.item, 1, data.species + type));
+        }
+        return list;
+    }
+
+    private LabeledStack toLS(ParentData data, int display, int x, int y) {
+        ItemStack bumble = ST.make(data.item, 1, data.species + display);
+        return new LabeledStack(toBumbles(data, 0, 1, 2, 5, 6, 7), x, y, LanguageHandler.translate(bumble.getUnlocalizedName()), 19);
     }
 
     private int sneed(int parent1, int parent2) {

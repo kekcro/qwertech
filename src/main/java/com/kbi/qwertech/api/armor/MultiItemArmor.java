@@ -14,7 +14,6 @@ import gregapi.code.ItemStackSet;
 import gregapi.code.ObjectStack;
 import gregapi.code.TagData;
 import gregapi.damage.DamageSources;
-import gregapi.data.CS.*;
 import gregapi.data.LH;
 import gregapi.data.MT;
 import gregapi.data.TC.TC_AspectStack;

@@ -1,7 +1,6 @@
 package com.kbi.qwertech.api.armor;
 
 import gregapi.data.CS;
-import gregapi.data.CS.*;
 import gregapi.data.MT;
 import gregapi.data.OP;
 import gregapi.old.Textures;

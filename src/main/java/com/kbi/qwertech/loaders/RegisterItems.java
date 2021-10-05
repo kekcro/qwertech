@@ -2,6 +2,7 @@ package com.kbi.qwertech.loaders;
 
 import com.kbi.qwertech.QwerTech;
 import com.kbi.qwertech.api.armor.upgrades.IArmorUpgrade;
+import com.kbi.qwertech.api.data.QTConfigs;
 import com.kbi.qwertech.api.data.QTI;
 import com.kbi.qwertech.api.data.QTMT;
 import com.kbi.qwertech.api.entities.Species;
@@ -14,10 +15,14 @@ import com.kbi.qwertech.entities.EntityHelperFunctions;
 import com.kbi.qwertech.entities.genetic.EntityPhasianidae;
 import com.kbi.qwertech.entities.neutral.EntityTurkey;
 import com.kbi.qwertech.entities.passive.EntityFrog;
+import com.kbi.qwertech.items.CustomItemBumbles;
 import com.kbi.qwertech.items.behavior.Behavior_Spawn;
 import com.kbi.qwertech.items.behavior.Behavior_ThrowEgg;
+import com.kbi.qwertech.loaders.RegisterBumbles.BumbleData;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.data.*;
 import gregapi.data.CS.ModIDs;
 import gregapi.item.multiitem.MultiItemRandom;
@@ -54,8 +59,12 @@ import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import static com.kbi.qwertech.loaders.RegisterBumbles.CUSTOM_BUMBLE_DATA;
 import static gregapi.data.CS.T;
 
 @InterfaceList(value = {
@@ -67,41 +76,43 @@ import static gregapi.data.CS.T;
 		})
 public class RegisterItems {
 
-	public static void run()
-	{
-		new MultiItemRandom(QwerTech.MODID, "qwertech.internal") {@Override public void addItems() {
-			QTI.moldArrow.set(addItem(1, "Mold Shape Arrow"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldAxe.set(addItem(2, "Mold Shape Axe"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldBolt.set(addItem(3, "Mold Shape Bolt"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldChisel.set(addItem(4, "Mold Shape Chisel"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldChunk.set(addItem(5, "Mold Shape Chunk"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldDoubleAxe.set(addItem(6, "Mold Shape Double Axe"			, "", null, TD.Creative.HIDDEN));
-			QTI.moldFile.set(addItem(7, "Mold Shape File"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldGear.set(addItem(8, "Mold Shape Gear"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldHammer.set(addItem(9, "Mold Shape Hammer"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldHoe.set(addItem(10, "Mold Shape Hoe"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldIngot.set(addItem(11, "Mold Shape Ingot"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldItemCasing.set(addItem(12, "Mold Shape Item Casing"		, "", null, TD.Creative.HIDDEN));
-			QTI.moldLongRod.set(addItem(13, "Mold Shape Long Rod"			, "", null, TD.Creative.HIDDEN));
-			QTI.moldPickaxe.set(addItem(14, "Mold Shape Pickaxe"			, "", null, TD.Creative.HIDDEN));
-			QTI.moldPlate.set(addItem(15, "Mold Shape Plate"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldPlow.set(addItem(16, "Mold Shape Plow"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldRing.set(addItem(17, "Mold Shape Ring"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldRod.set(addItem(18, "Mold Shape Rod"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldSaw.set(addItem(19, "Mold Shape Saw"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldScrewdriver.set(addItem(20, "Mold Shape Screwdriver"		, "", null, TD.Creative.HIDDEN));
-			QTI.moldSense.set(addItem(21, "Mold Shape Sense"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldShovel.set(addItem(22, "Mold Shape Shovel"			, "", null, TD.Creative.HIDDEN));
-			QTI.moldSmallGear.set(addItem(23, "Mold Shape Small Gear"		, "", null, TD.Creative.HIDDEN));
-			QTI.moldSword.set(addItem(24, "Mold Shape Sword"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldTinyPlate.set(addItem(25, "Mold Shape Tiny Plate"		, "", null, TD.Creative.HIDDEN));
-			QTI.moldUniversalSpade.set(addItem(26, "Mold Shape Universal Spade"	, "", null, TD.Creative.HIDDEN));
-			QTI.moldSpade.set(addItem(27, "Mold Shape Spade"				, "", null, TD.Creative.HIDDEN));
-			QTI.moldMattock.set(addItem(28, "Mold Shape Mattock"			, "", null, TD.Creative.HIDDEN));
-			QTI.moldMace.set(addItem(29, "Mold Shape Mace"				, "", null, TD.Creative.HIDDEN));
-			QTI.batEmblem.set(addItem(30, "Achievement Bat"				, "", null, TD.Creative.HIDDEN));
-			addItem(10000, "", "", null, TD.Creative.HIDDEN);
-		}};
+	public static void run() {
+		new MultiItemRandom(QwerTech.MODID, "qwertech.internal") {
+			@Override
+			public void addItems() {
+				QTI.moldArrow.set(addItem(1, "Mold Shape Arrow", "", null, TD.Creative.HIDDEN));
+				QTI.moldAxe.set(addItem(2, "Mold Shape Axe", "", null, TD.Creative.HIDDEN));
+				QTI.moldBolt.set(addItem(3, "Mold Shape Bolt", "", null, TD.Creative.HIDDEN));
+				QTI.moldChisel.set(addItem(4, "Mold Shape Chisel", "", null, TD.Creative.HIDDEN));
+				QTI.moldChunk.set(addItem(5, "Mold Shape Chunk", "", null, TD.Creative.HIDDEN));
+				QTI.moldDoubleAxe.set(addItem(6, "Mold Shape Double Axe", "", null, TD.Creative.HIDDEN));
+				QTI.moldFile.set(addItem(7, "Mold Shape File", "", null, TD.Creative.HIDDEN));
+				QTI.moldGear.set(addItem(8, "Mold Shape Gear", "", null, TD.Creative.HIDDEN));
+				QTI.moldHammer.set(addItem(9, "Mold Shape Hammer", "", null, TD.Creative.HIDDEN));
+				QTI.moldHoe.set(addItem(10, "Mold Shape Hoe", "", null, TD.Creative.HIDDEN));
+				QTI.moldIngot.set(addItem(11, "Mold Shape Ingot", "", null, TD.Creative.HIDDEN));
+				QTI.moldItemCasing.set(addItem(12, "Mold Shape Item Casing", "", null, TD.Creative.HIDDEN));
+				QTI.moldLongRod.set(addItem(13, "Mold Shape Long Rod", "", null, TD.Creative.HIDDEN));
+				QTI.moldPickaxe.set(addItem(14, "Mold Shape Pickaxe", "", null, TD.Creative.HIDDEN));
+				QTI.moldPlate.set(addItem(15, "Mold Shape Plate", "", null, TD.Creative.HIDDEN));
+				QTI.moldPlow.set(addItem(16, "Mold Shape Plow", "", null, TD.Creative.HIDDEN));
+				QTI.moldRing.set(addItem(17, "Mold Shape Ring", "", null, TD.Creative.HIDDEN));
+				QTI.moldRod.set(addItem(18, "Mold Shape Rod", "", null, TD.Creative.HIDDEN));
+				QTI.moldSaw.set(addItem(19, "Mold Shape Saw", "", null, TD.Creative.HIDDEN));
+				QTI.moldScrewdriver.set(addItem(20, "Mold Shape Screwdriver", "", null, TD.Creative.HIDDEN));
+				QTI.moldSense.set(addItem(21, "Mold Shape Sense", "", null, TD.Creative.HIDDEN));
+				QTI.moldShovel.set(addItem(22, "Mold Shape Shovel", "", null, TD.Creative.HIDDEN));
+				QTI.moldSmallGear.set(addItem(23, "Mold Shape Small Gear", "", null, TD.Creative.HIDDEN));
+				QTI.moldSword.set(addItem(24, "Mold Shape Sword", "", null, TD.Creative.HIDDEN));
+				QTI.moldTinyPlate.set(addItem(25, "Mold Shape Tiny Plate", "", null, TD.Creative.HIDDEN));
+				QTI.moldUniversalSpade.set(addItem(26, "Mold Shape Universal Spade", "", null, TD.Creative.HIDDEN));
+				QTI.moldSpade.set(addItem(27, "Mold Shape Spade", "", null, TD.Creative.HIDDEN));
+				QTI.moldMattock.set(addItem(28, "Mold Shape Mattock", "", null, TD.Creative.HIDDEN));
+				QTI.moldMace.set(addItem(29, "Mold Shape Mace", "", null, TD.Creative.HIDDEN));
+				QTI.batEmblem.set(addItem(30, "Achievement Bat", "", null, TD.Creative.HIDDEN));
+				addItem(10000, "", "", null, TD.Creative.HIDDEN);
+			}
+		};
 
 		QTI.syringe.set(new MultiItemRandom(QwerTech.MODID, "qwertech.dna") {
 			@Override
@@ -111,7 +122,7 @@ public class RegisterItems {
 				addItem(2, "Salty Syringe", "A bit... crusty, inside");
 				addItem(3, "Sugary Syringe", "A bit... crusty, inside");
 				addItem(4, "Syringe of Water", "Drippity dropper", UT.Fluids.make("water", 100L));
-                addItem(5, "Syringe of Distilled Water", "Purified droppity dripper", UT.Fluids.make("ic2distilledwater", 100L));
+				addItem(5, "Syringe of Distilled Water", "Purified droppity dripper", UT.Fluids.make("ic2distilledwater", 100L));
 
 				addItem(10, "Syringe of Saltwater", "Non-potable", UT.Fluids.make("saltwater", 100L), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("saltwater", 100L), make(10), make(0), T));
 				addItem(11, "Syringe of Salty Water", "Non-potable", UT.Fluids.make("seawater", 100L), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("seawater", 100L), make(11), make(0), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("water", 100L), make(11), make(2), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("ic2distilledwater", 100L), make(11), make(2), T));
@@ -154,7 +165,7 @@ public class RegisterItems {
 				addItem(55, "Syringe of Starfruit Juice", "No, no... star juice is just Hydrogen", new FluidContainerData(UT.Fluids.make("starfruitjuice", 100L), make(55), make(0), T), new FluidContainerData(UT.Fluids.make("starfruitjuice", 100L), make(55), make(3), T));
 				addItem(56, "Syringe of Pineapple Juice", "Or Ananas Juice, if you are so inclined", new FluidContainerData(UT.Fluids.make("binnie.juicepineapple", 100L), make(56), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicepineapple", 100L), make(56), make(3), T));
 				addItem(57, "Syringe of Grape Juice", "It's grrrrrrrape", new FluidContainerData(UT.Fluids.make("grapejuice", 100L), make(57), make(0), T), new FluidContainerData(UT.Fluids.make("grapejuice", 100L), make(57), make(3), T));
-                addItem(58, "Syringe of Sugarwater", "100cc of sugar helps the medicine flow down", UT.Fluids.make("sugarwater", 100L), new FluidContainerData(UT.Fluids.make("water", 100L), make(58), make(3), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("sugarwater", 100L), make(58), make(0), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("ic2distilledwater", 100L), make(58), make(3), T));
+				addItem(58, "Syringe of Sugarwater", "100cc of sugar helps the medicine flow down", UT.Fluids.make("sugarwater", 100L), new FluidContainerData(UT.Fluids.make("water", 100L), make(58), make(3), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("sugarwater", 100L), make(58), make(0), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("ic2distilledwater", 100L), make(58), make(3), T));
 
 				addItem(100, "Syringe of Dirty Water", "Needs to be flushed a few times", new FluidContainerData(UT.Fluids.make("waterdirty", 100L), make(100), make(1), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("water", 100L), make(100), make(1), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("waterdirty", 100L), make(100), make(0), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("ic2distilledwater", 100L), make(100), make(1), T));
 				addItem(101, "Syringe of Milk", "Not for infant injection", UT.Fluids.make("milk", 100L), new FluidContainerData(UT.Fluids.make("milk", 100L), make(101), make(0), T));
@@ -162,23 +173,22 @@ public class RegisterItems {
 				addItem(103, "Syringe of DNA", "", UT.Fluids.make("dna", 100L), new FluidContainerData(UT.Fluids.make("dna", 100L), make(103), make(0), T));
 				addItem(104, "Syringe of Soymilk", "Not actually milk", UT.Fluids.make("soymilk", 100L), new FluidContainerData(UT.Fluids.make("soymilk", 100L), make(104), make(0), T));
 				addItem(105, "Syringe of Blaze", "IT BURNS!", UT.Fluids.make("blaze", 100L), new FluidContainerData(UT.Fluids.make("blaze", 100L), make(105), make(0), T));
-                addItem(106, "Syringe of Mushroom Soup", "Delicious", UT.Fluids.make("mushroomsoup", 100L), new FluidContainerData(UT.Fluids.make("mushroomsoup", 100L), make(106), make(0), T));
-                addItem(107, "Syringe of Ice Water", "You said " + LH.Chat.ITALIC + "hypothermic" + LH.Chat.RESET + " needle, right?", UT.Fluids.make("ice", 100L), new FluidContainerData(UT.Fluids.make("ice", 100L), make(107), make(0), T));
-                addItem(108, "Syringe of Slime", "It's squirming around in there...", UT.Fluids.make("slime", 100L), new FluidContainerData(UT.Fluids.make("slime", 100L), make(108), make(0), T));
+				addItem(106, "Syringe of Mushroom Soup", "Delicious", UT.Fluids.make("mushroomsoup", 100L), new FluidContainerData(UT.Fluids.make("mushroomsoup", 100L), make(106), make(0), T));
+				addItem(107, "Syringe of Ice Water", "You said " + LH.Chat.ITALIC + "hypothermic" + LH.Chat.RESET + " needle, right?", UT.Fluids.make("ice", 100L), new FluidContainerData(UT.Fluids.make("ice", 100L), make(107), make(0), T));
+				addItem(108, "Syringe of Slime", "It's squirming around in there...", UT.Fluids.make("slime", 100L), new FluidContainerData(UT.Fluids.make("slime", 100L), make(108), make(0), T));
 
-                CR.shaped(make(2, 0), new Object[]{"ABA", " C ", " D ", 'A', OP.round.dat(MT.Plastic).toString(), 'B', OP.stick.dat(MT.Plastic).toString(), 'C', OP.pipeTiny.dat(MT.Plastic).toString(), 'D', OP.bolt.dat(ANY.Steel).toString()});
+				CR.shaped(make(2, 0), new Object[]{"ABA", " C ", " D ", 'A', OP.round.dat(MT.Plastic).toString(), 'B', OP.stick.dat(MT.Plastic).toString(), 'C', OP.pipeTiny.dat(MT.Plastic).toString(), 'D', OP.bolt.dat(ANY.Steel).toString()});
 			}
 
-            @Override
-            public int getCapacity(ItemStack aStack) {
-                return 100;
-            }
+			@Override
+			public int getCapacity(ItemStack aStack) {
+				return 100;
+			}
 
-            @Override
+			@Override
 			public int fill(ItemStack aStack, FluidStack aFluid, boolean doFill) {
 				int dam = aStack.getItemDamage();
-				switch(dam)
-				{
+				switch (dam) {
 					/*case 1:
 					case 3:
 						if (aFluid.isFluidEqual(UT.Fluids.make("water", 1))) {
@@ -192,45 +202,43 @@ public class RegisterItems {
 							return fill(doFill ? aStack : make(0), UT.Fluids.make("saltwater", aFluid.amount), doFill);
 						}
 						break;*/
-                    case 1:
-                    case 2:
-                    case 3:
-                        if (aFluid.isFluidEqual(UT.Fluids.make("dna", 1)) || aFluid.isFluidEqual(UT.Fluids.make("blood", 1)))
-                        {
-                            NBTTagCompound taggy = UT.NBT.getOrCreate(aStack);
-                            taggy.setBoolean("contaminated", true);
-                            aStack.setTagCompound(taggy);
-                        }
-                        break;
+					case 1:
+					case 2:
+					case 3:
+						if (aFluid.isFluidEqual(UT.Fluids.make("dna", 1)) || aFluid.isFluidEqual(UT.Fluids.make("blood", 1))) {
+							NBTTagCompound taggy = UT.NBT.getOrCreate(aStack);
+							taggy.setBoolean("contaminated", true);
+							aStack.setTagCompound(taggy);
+						}
+						break;
 				}
 				return super.fill(aStack, aFluid, doFill);
 			}
 
-            @Override
-            public FluidStack drain(ItemStack aStack, int aMaxDrain, boolean aDoDrain) {
-			    System.out.println("DRAIN");
-                return super.drain(aStack, aMaxDrain, aDoDrain);
-            }
+			@Override
+			public FluidStack drain(ItemStack aStack, int aMaxDrain, boolean aDoDrain) {
+				System.out.println("DRAIN");
+				return super.drain(aStack, aMaxDrain, aDoDrain);
+			}
 
-            @Override public ItemStack getContainerItem(ItemStack aStack) {
+			@Override
+			public ItemStack getContainerItem(ItemStack aStack) {
 				int dam = aStack.getItemDamage();
-                if (CS.RNGSUS.nextInt(10) == 1)
-                {
-                    return this.make(0);
-                }
+				if (CS.RNGSUS.nextInt(10) == 1) {
+					return this.make(0);
+				}
 				if (dam > 100 && dam < 1000) {
 					return this.make(1);
-				} else if(dam >= 10 && dam < 20) {
+				} else if (dam >= 10 && dam < 20) {
 					return this.make(2);
-				} else if(dam >= 20 && dam < 100) {
+				} else if (dam >= 20 && dam < 100) {
 					return this.make(3);
 				}
-				switch(dam)
-				{
+				switch (dam) {
 					case 100:
 						return this.make(1);
 					case 4:
-                    case 5:
+					case 5:
 						return this.make(0);
 				}
 				return null;
@@ -239,6 +247,7 @@ public class RegisterItems {
 			Object emptySyringe = null;
 			Object fullSyringe = null;
 			Object syringeContents = null;
+
 			@Override
 			public void registerIcons(IIconRegister aIconRegister) {
 				emptySyringe = aIconRegister.registerIcon("qwertech:qwertech.dna/syringeEmpty");
@@ -247,14 +256,12 @@ public class RegisterItems {
 			}
 
 			@Override
-			public boolean requiresMultipleRenderPasses()
-			{
+			public boolean requiresMultipleRenderPasses() {
 				return true;
 			}
 
 			@Override
-			public int getRenderPasses(int metadata)
-			{
+			public int getRenderPasses(int metadata) {
 				if (metadata > 3) {
 					return 2;
 				}
@@ -262,23 +269,20 @@ public class RegisterItems {
 			}
 
 			@Override
-			public IIcon getIconIndex(ItemStack stack)
-			{
+			public IIcon getIconIndex(ItemStack stack) {
 				return getIcon(stack, 0);
 			}
 
 			@Override
-			public IIcon getIcon(ItemStack stack, int renderpass)
-			{
+			public IIcon getIcon(ItemStack stack, int renderpass) {
 				if (renderpass <= 0) {
-					if (this.getFluid(stack) != null)
-					{
-						return (IIcon)fullSyringe;
+					if (this.getFluid(stack) != null) {
+						return (IIcon) fullSyringe;
 					} else {
-						return (IIcon)emptySyringe;
+						return (IIcon) emptySyringe;
 					}
 				} else {
-					return ((IIcon)syringeContents);
+					return ((IIcon) syringeContents);
 				}
 			}
 
@@ -293,276 +297,264 @@ public class RegisterItems {
 			}
 
 			@Override
-			public IIcon getIconFromDamageForRenderPass(int damage, int renderpass)
-			{
+			public IIcon getIconFromDamageForRenderPass(int damage, int renderpass) {
 				return this.getIcon(ST.make(this, 1, damage), renderpass);
 			}
 
 			@Override
 			public boolean itemInteractionForEntity(ItemStack aStack, EntityPlayer aPlayer, EntityLivingBase aEntity) {
-                //if (aPlayer.worldObj.isRemote) return super.itemInteractionForEntity(aStack, aPlayer, aEntity);
-                //System.out.println("StAbBy");
-			    ItemStack aUse = aPlayer.getCurrentEquippedItem();
-                aUse.stackSize = aUse.stackSize - 1;
-                aPlayer.setCurrentItemOrArmor(0, aUse.stackSize > 0 ? aUse : null);
-			    int md = aStack.getItemDamage();
-			    aStack.stackSize = 1;
-				if (md == 0)
-				{
-				    Fluid bloody = MobBloodRegistry.getFluid(aEntity.getClass());
-				    if (bloody == null)
-                    {
-                        aUse.stackSize = aUse.stackSize + 1;
-                        aPlayer.setCurrentItemOrArmor(0, aUse);
-                        return false;
-                    }
+				//if (aPlayer.worldObj.isRemote) return super.itemInteractionForEntity(aStack, aPlayer, aEntity);
+				//System.out.println("StAbBy");
+				ItemStack aUse = aPlayer.getCurrentEquippedItem();
+				aUse.stackSize = aUse.stackSize - 1;
+				aPlayer.setCurrentItemOrArmor(0, aUse.stackSize > 0 ? aUse : null);
+				int md = aStack.getItemDamage();
+				aStack.stackSize = 1;
+				if (md == 0) {
+					Fluid bloody = MobBloodRegistry.getFluid(aEntity.getClass());
+					if (bloody == null) {
+						aUse.stackSize = aUse.stackSize + 1;
+						aPlayer.setCurrentItemOrArmor(0, aUse);
+						return false;
+					}
 					aStack = UT.Fluids.fillFluidContainer(UT.Fluids.make(bloody, 100), aStack, true, true);
 					NBTTagCompound nbt = UT.NBT.getOrCreate(aStack);
 					aEntity.writeToNBT(nbt);
 					System.out.println(nbt.toString());
 					nbt.setString("Class", aEntity.getClass().getName());
-					nbt.setString("ClassName", (String)EntityList.classToStringMapping.get(aEntity.getClass()));
+					nbt.setString("ClassName", (String) EntityList.classToStringMapping.get(aEntity.getClass()));
 					aStack.setTagCompound(EntityHelperFunctions.sanitizeEntity(nbt));
 					aEntity.attackEntityFrom(new EntityDamageSource("syringe", aPlayer), 1);
 					aPlayer.inventory.addItemStackToInventory(aStack.copy());
 					return true;
-				} else if (md < 4)
-				{
-                    Fluid bloody = MobBloodRegistry.getFluid(aEntity.getClass());
-                    if (bloody == null)
-                    {
-                        aUse.stackSize = aUse.stackSize + 1;
-                        aPlayer.setCurrentItemOrArmor(0, aUse);
-                        return false;
-                    }
-                    aStack = UT.Fluids.fillFluidContainer(UT.Fluids.make(bloody, 100), aStack, true, true);
-                    NBTTagCompound nbt = UT.NBT.getOrCreate(aStack);
+				} else if (md < 4) {
+					Fluid bloody = MobBloodRegistry.getFluid(aEntity.getClass());
+					if (bloody == null) {
+						aUse.stackSize = aUse.stackSize + 1;
+						aPlayer.setCurrentItemOrArmor(0, aUse);
+						return false;
+					}
+					aStack = UT.Fluids.fillFluidContainer(UT.Fluids.make(bloody, 100), aStack, true, true);
+					NBTTagCompound nbt = UT.NBT.getOrCreate(aStack);
 					aEntity.writeToNBT(nbt);
 					nbt.setString("Class", aEntity.getClass().getName());
-                    nbt.setString("ClassName", (String)EntityList.classToStringMapping.get(aEntity.getClass()));
-                    nbt.setBoolean("contaminated", true);
-                    aStack.setTagCompound(EntityHelperFunctions.sanitizeEntity(nbt));
+					nbt.setString("ClassName", (String) EntityList.classToStringMapping.get(aEntity.getClass()));
+					nbt.setBoolean("contaminated", true);
+					aStack.setTagCompound(EntityHelperFunctions.sanitizeEntity(nbt));
 					aEntity.attackEntityFrom(new EntityDamageSource("syringe", aPlayer), 1);
-                    aPlayer.inventory.addItemStackToInventory(aStack.copy());
+					aPlayer.inventory.addItemStackToInventory(aStack.copy());
 					return true;
-				} else if (md == 102)
-				{
+				} else if (md == 102) {
 					aStack.setItemDamage(1);
 					NBTTagCompound nbt = UT.NBT.getOrCreate(aStack);
-					if (!nbt.getString("Class").equals(aEntity.getClass().getName()))
-					{
+					if (!nbt.getString("Class").equals(aEntity.getClass().getName())) {
 						aEntity.addPotionEffect(new PotionEffect(Potion.poison.id, 100, 1, true));
 					}
-					if (nbt.getBoolean("contaminated"))
-                    {
-                        aEntity.addPotionEffect(new PotionEffect(Potion.wither.id, 100, 1, true));
-                    }
+					if (nbt.getBoolean("contaminated")) {
+						aEntity.addPotionEffect(new PotionEffect(Potion.wither.id, 100, 1, true));
+					}
 					aStack.setTagCompound(new NBTTagCompound());
 					aEntity.heal(1); //make sure we don't kill the poor feller by stabbing it with too low health
 					aEntity.attackEntityFrom(new EntityDamageSource("syringe", aPlayer), 1); //ow sharp
 					aEntity.heal(1); //health from injection
-                    aPlayer.inventory.addItemStackToInventory(aStack.copy());
+					aPlayer.inventory.addItemStackToInventory(aStack.copy());
 					return true;
 				}
-                aUse.stackSize = aUse.stackSize + 1;
-                aPlayer.setCurrentItemOrArmor(0, aUse);
+				aUse.stackSize = aUse.stackSize + 1;
+				aPlayer.setCurrentItemOrArmor(0, aUse);
 				return super.itemInteractionForEntity(aStack, aPlayer, aEntity);
 			}
 
-            @Override
-            public void addAdditionalToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
-			    NBTTagCompound nbt = UT.NBT.getOrCreate(aStack);
-			    if (nbt.getBoolean("contaminated"))
-                {
-                    aList.add(LH.Chat.BLINKING_RED + "Contaminated" + LH.Chat.GRAY);
-                }
-                if (nbt.getString("ClassName") != null && !nbt.getString("ClassName").equals(""))
-                {
-                    aList.add(LH.get(nbt.getString("ClassName")));
-                }
-                super.addAdditionalToolTips(aList, aStack, aF3_H);
-            }
-        });
-		
-		QTI.qwerFood.set(new MultiItemRandom(QwerTech.MODID, "qwertech.food") {@Override public void addItems() {
-			addItem(0, "Mozzarella"					, "Itsa good cheese", 					new FoodStat(3, 0.5F, 0F, 310F, 0.1F, EnumAction.eat, null, false, false, false, false));
-			addItem(1, "Raw Parmesan"				, "Needs to be soaked in saltwater", 	new FoodStat(1, 0.1F, 0F, 310F, 0.1F, EnumAction.eat, null, false, false, false, false));
-			addItem(2, "Parmesan"					, "Ready for grating!", 				new FoodStat(3, 0.5F, -10F, 310F, 0.1F, EnumAction.eat, null, false, false, false, false));
-			addItem(3, "Grated Parmesan"			, "Pasta perfection", 					new FoodStat(3, 0.5F, -10F, 310F, 0.1F, EnumAction.eat, null, false, false, false, false));
-			addItem(4, "Flat Dough with Sauce"		, "For making Pizza");
-			addItem(5, "Raw Turkey Breast"			, "",									"listAllmeatraw", "listAllturkeyraw", new FoodStat(3, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 12, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
-			addItem(6, "Cooked Turkey Breast"		, "",									"listAllmeatcooked", "listAllturkeycooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 12, EnumAction.eat, null, false, true, false, true));
-			addItem(7, "Raw Turkey Leg" 			, "",									"listAllmeatraw", "listAllturkeyraw", new FoodStat(3, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 3, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
-			addItem(8, "Cooked Turkey Leg"			, "",									"listAllmeatcooked", "listAllturkeycooked", new FoodStat(8, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 3, EnumAction.eat, null, false, true, false, true));
-			addItem(9, "Raw Chicken Wing"			, "",									"listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
-			addItem(10, "Cooked Chicken Wing"		, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true));
-			addItem(11, "Raw Turkey Wing"			, "",									"listAllmeatraw", "listAllturkeyraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 3, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
-			addItem(12, "Cooked Turkey Wing"		, "",									"listAllmeatcooked", "listAllturkeycooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 3, EnumAction.eat, null, false, true, false, true));
-			addItem(13, "Turkey Egg"				, "",									"listAllegg", new Behavior_ThrowEgg());
-			addItem(14, "Hard-Boiled Turkey Egg"	, "",									"foodBoiledegg", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 10, EnumAction.eat, null, false, true, false, true));
-			addItem(15, "Hard-Boiled Egg"			, "",									"foodBoiledegg", new FoodStat(4, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true));
-			addItem(16, "Raw Chicken Leg"			, "",									"listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
-			addItem(17, "Cooked Chicken Leg"		, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 12, EnumAction.eat, null, false, true, false, true));
-			addItem(18, "Fried Chicken Leg"			, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 30, EnumAction.eat, null, false, true, false, true));
-			addItem(19, "Fried Turkey Leg"			, "",									"listAllmeatcooked", "listAllturkeycooked", new FoodStat(8, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 30, EnumAction.eat, null, false, true, false, true));
-			addItem(20, "Fried Chicken Wing"		, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 30, EnumAction.eat, null, false, true, false, true));
-			addItem(21, "Fried Turkey Wing"			, "",									"listAllmeatcooked", "listAllturkeycooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 30, EnumAction.eat, null, false, true, false, true));
-			addItem(22, "Feather"			        , "",	                    			"itemFeather", "feather", "craftingFeather");
-			addItem(23, "Whole Raw Turkey"			, "Too big to eat",						"carcassTurkey");
-			addItem(24, "Whole Cooked Turkey"		, "Too big to eat",						"carcassTurkey");
-			addItem(25, "Raw Chicken Breast"		, "",									"listAllmeatraw", "listAllchickenraw", new FoodStat(3, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 16, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
-			addItem(26, "Cooked Chicken Breast"		, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 12, EnumAction.eat, null, false, true, false, true));
-			addItem(27, "Whole Raw Chicken"			, "Too big to eat",						"carcassChicken");
-			addItem(28, "Whole Cooked Chicken"		, "Too big to eat",						"carcassTurkey");
-			addItem(29, "Raw Frog Leg"				, "Le slimey",							"listAllmeatraw", "listAllfrograw", new FoodStat(2, 0.5F, 0.0F, 310.0F, 0.1F, 0, 0, 3, 0, 4, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20, Potion.confusion.id, 500, 1, 50));
-			addItem(30, "Cooked Frog Leg"			, "Lucky ribbit foot",					"listAllmeatcooked", "listAllfrogcooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 3, 0, 4, EnumAction.eat, null, false, true, false, true, Potion.confusion.id, 100, 1, 10, Potion.jump.id, 1000, 1, 10));
-			addItem(31, "Frog Eggs"					, "Just add water",						"foodCaviar");
-			addItem(32, "Chicken Egg"				, "",  									"listAllegg");
-			addItem(33, "Whole Raw Junglefowl"		, "",									"carcassChicken");
-			addItem(34, "Whole Cooked Junglefowl"	, "", 									"carcassChicken");
-			addItem(35, "Raw Junglefowl Breast"		, "",									"listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 14, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
-			addItem(36, "Cooked Junglefowl Breast"	, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(4, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 10, EnumAction.eat, null, false, true, false, true));
-			addItem(37, "Raw Junglefowl Wing"		, "",									"listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 4, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
-			addItem(38, "Cooked Junglefowl Wing"	, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(4, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 4, EnumAction.eat, null, false, true, false, true));
-			addItem(39, "Raw Junglefowl Leg"		, "",									"listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
-			addItem(40, "Cooked Junglefowl Leg"		, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 10, EnumAction.eat, null, false, true, false, true));
-			addItem(41, "Fried Junglefowl Leg"		, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 26, EnumAction.eat, null, false, true, false, true));
-			addItem(42, "Fried Junglefowl Wing"		, "",									"listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 26, EnumAction.eat, null, false, true, false, true));
-			addItem(43, "Junglefowl Egg"			, "",  									"listAllegg");
-			addItem(44, "Sulphuric Feather"			, "Smells Rotten", 					  	"itemFeather", "feather", "craftingFeather");
+			@Override
+			public void addAdditionalToolTips(List<String> aList, ItemStack aStack, boolean aF3_H) {
+				NBTTagCompound nbt = UT.NBT.getOrCreate(aStack);
+				if (nbt.getBoolean("contaminated")) {
+					aList.add(LH.Chat.BLINKING_RED + "Contaminated" + LH.Chat.GRAY);
+				}
+				if (nbt.getString("ClassName") != null && !nbt.getString("ClassName").equals("")) {
+					aList.add(LH.get(nbt.getString("ClassName")));
+				}
+				super.addAdditionalToolTips(aList, aStack, aF3_H);
+			}
+		});
 
-			addItem(1000, "Tomato Sauce"			, "", 									UT.Fluids.make("tomatosauce", 250L), FoodStatFluid.INSTANCE );
-			addItem(1001, "Salsa"					, "Mild", 								UT.Fluids.make("mildsalsa", 250L), FoodStatFluid.INSTANCE );
-			addItem(1002, "Salsa"					, "Medium", 							UT.Fluids.make("salsa", 250L), FoodStatFluid.INSTANCE );
-			addItem(1003, "Salsa"					, "Magmatic", 							UT.Fluids.make("hotsalsa", 250L), FoodStatFluid.INSTANCE );
-			
-			QTI.mozzarella.set(ST.make(this, 1, 0));
-			QTI.parmesanRaw.set(ST.make(this, 1, 1));
-			QTI.parmesan.set(ST.make(this, 1, 2));
-			QTI.parmesanGrated.set(ST.make(this, 1, 3));
-			QTI.doughFlatSauce.set(ST.make(this, 1, 4));
-			QTI.turkeyBreastRaw.set(ST.make(this, 1, 5));
-			QTI.turkeyBreastCooked.set(ST.make(this, 1, 6));
-			QTI.turkeyLegRaw.set(ST.make(this, 1, 7));
-			QTI.turkeyLegCooked.set(ST.make(this, 1, 8));
-			QTI.chickenWingRaw.set(ST.make(this, 1, 9));
-			QTI.chickenWingCooked.set(ST.make(this, 1, 10));
-			QTI.turkeyWingRaw.set(ST.make(this, 1, 11));
-			QTI.turkeyWingCooked.set(ST.make(this, 1, 12));
-			QTI.turkeyEgg.set(ST.make(this, 1, 13));
-			QTI.turkeyEggHardBoiled.set(ST.make(this, 1, 14));
-			QTI.chickenEggHardBoiled.set(ST.make(this, 1, 15));
-			QTI.chickenLegRaw.set(ST.make(this, 1, 16));
-			QTI.chickenLegCooked.set(ST.make(this, 1, 17));
-			QTI.chickenLegFried.set(ST.make(this, 1, 18));
-			QTI.turkeyLegFried.set(ST.make(this, 1, 19));
-			QTI.chickenWingFried.set(ST.make(this, 1, 20));
-			QTI.turkeyWingFried.set(ST.make(this, 1, 21));
-			QTI.turkeyFeather.set(ST.make(this, 1, 22));
-			QTI.turkeyWholeRaw.set(ST.make(this, 1, 23));
-			QTI.turkeyWholeCooked.set(ST.make(this, 1, 24));
-			QTI.chickenBreastRaw.set(ST.make(this, 1, 25));
-			QTI.chickenBreastCooked.set(ST.make(this, 1, 26));
-			QTI.chickenWholeRaw.set(ST.make(this, 1, 27));
-			QTI.chickenWholeCooked.set(ST.make(this, 1, 28));
-			QTI.frogLegRaw.set(ST.make(this, 1, 29));
-			QTI.frogLegCooked.set(ST.make(this, 1, 30));
-			QTI.frogEggs.set(ST.make(this, 1, 31));
-			QTI.chickenEgg.set(ST.make(this, 1, 32));
-			QTI.junglefowlWholeRaw.set(ST.make(this, 1, 33));
-			QTI.junglefowlWholeCooked.set(ST.make(this, 1, 34));
-			QTI.junglefowlBreastRaw.set(ST.make(this, 1, 35));
-			QTI.junglefowlBreastCooked.set(ST.make(this, 1, 36));
-			QTI.junglefowlWingRaw.set(ST.make(this, 1, 37));
-			QTI.junglefowlWingCooked.set(ST.make(this, 1, 38));
-			QTI.junglefowlLegRaw.set(ST.make(this, 1, 39));
-			QTI.junglefowlLegCooked.set(ST.make(this, 1, 40));
-			QTI.junglefowlLegFried.set(ST.make(this, 1, 41));
-			QTI.junglefowlWingFried.set(ST.make(this, 1, 42));
-			QTI.junglefowlEgg.set(ST.make(this, 1, 43));
+		QTI.qwerFood.set(new MultiItemRandom(QwerTech.MODID, "qwertech.food") {
+			@Override
+			public void addItems() {
+				addItem(0, "Mozzarella", "Itsa good cheese", new FoodStat(3, 0.5F, 0F, 310F, 0.1F, EnumAction.eat, null, false, false, false, false));
+				addItem(1, "Raw Parmesan", "Needs to be soaked in saltwater", new FoodStat(1, 0.1F, 0F, 310F, 0.1F, EnumAction.eat, null, false, false, false, false));
+				addItem(2, "Parmesan", "Ready for grating!", new FoodStat(3, 0.5F, -10F, 310F, 0.1F, EnumAction.eat, null, false, false, false, false));
+				addItem(3, "Grated Parmesan", "Pasta perfection", new FoodStat(3, 0.5F, -10F, 310F, 0.1F, EnumAction.eat, null, false, false, false, false));
+				addItem(4, "Flat Dough with Sauce", "For making Pizza");
+				addItem(5, "Raw Turkey Breast", "", "listAllmeatraw", "listAllturkeyraw", new FoodStat(3, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 12, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
+				addItem(6, "Cooked Turkey Breast", "", "listAllmeatcooked", "listAllturkeycooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 12, EnumAction.eat, null, false, true, false, true));
+				addItem(7, "Raw Turkey Leg", "", "listAllmeatraw", "listAllturkeyraw", new FoodStat(3, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 3, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
+				addItem(8, "Cooked Turkey Leg", "", "listAllmeatcooked", "listAllturkeycooked", new FoodStat(8, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 3, EnumAction.eat, null, false, true, false, true));
+				addItem(9, "Raw Chicken Wing", "", "listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
+				addItem(10, "Cooked Chicken Wing", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true));
+				addItem(11, "Raw Turkey Wing", "", "listAllmeatraw", "listAllturkeyraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 3, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
+				addItem(12, "Cooked Turkey Wing", "", "listAllmeatcooked", "listAllturkeycooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 3, EnumAction.eat, null, false, true, false, true));
+				addItem(13, "Turkey Egg", "", "listAllegg", new Behavior_ThrowEgg());
+				addItem(14, "Hard-Boiled Turkey Egg", "", "foodBoiledegg", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 10, EnumAction.eat, null, false, true, false, true));
+				addItem(15, "Hard-Boiled Egg", "", "foodBoiledegg", new FoodStat(4, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true));
+				addItem(16, "Raw Chicken Leg", "", "listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
+				addItem(17, "Cooked Chicken Leg", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 12, EnumAction.eat, null, false, true, false, true));
+				addItem(18, "Fried Chicken Leg", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 30, EnumAction.eat, null, false, true, false, true));
+				addItem(19, "Fried Turkey Leg", "", "listAllmeatcooked", "listAllturkeycooked", new FoodStat(8, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 30, EnumAction.eat, null, false, true, false, true));
+				addItem(20, "Fried Chicken Wing", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 30, EnumAction.eat, null, false, true, false, true));
+				addItem(21, "Fried Turkey Wing", "", "listAllmeatcooked", "listAllturkeycooked", new FoodStat(6, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 30, EnumAction.eat, null, false, true, false, true));
+				addItem(22, "Feather", "", "itemFeather", "feather", "craftingFeather");
+				addItem(23, "Whole Raw Turkey", "Too big to eat", "carcassTurkey");
+				addItem(24, "Whole Cooked Turkey", "Too big to eat", "carcassTurkey");
+				addItem(25, "Raw Chicken Breast", "", "listAllmeatraw", "listAllchickenraw", new FoodStat(3, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 16, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
+				addItem(26, "Cooked Chicken Breast", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 12, EnumAction.eat, null, false, true, false, true));
+				addItem(27, "Whole Raw Chicken", "Too big to eat", "carcassChicken");
+				addItem(28, "Whole Cooked Chicken", "Too big to eat", "carcassTurkey");
+				addItem(29, "Raw Frog Leg", "Le slimey", "listAllmeatraw", "listAllfrograw", new FoodStat(2, 0.5F, 0.0F, 310.0F, 0.1F, 0, 0, 3, 0, 4, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20, Potion.confusion.id, 500, 1, 50));
+				addItem(30, "Cooked Frog Leg", "Lucky ribbit foot", "listAllmeatcooked", "listAllfrogcooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 3, 0, 4, EnumAction.eat, null, false, true, false, true, Potion.confusion.id, 100, 1, 10, Potion.jump.id, 1000, 1, 10));
+				addItem(31, "Frog Eggs", "Just add water", "foodCaviar");
+				addItem(32, "Chicken Egg", "", "listAllegg");
+				addItem(33, "Whole Raw Junglefowl", "", "carcassChicken");
+				addItem(34, "Whole Cooked Junglefowl", "", "carcassChicken");
+				addItem(35, "Raw Junglefowl Breast", "", "listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 14, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
+				addItem(36, "Cooked Junglefowl Breast", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(4, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 10, EnumAction.eat, null, false, true, false, true));
+				addItem(37, "Raw Junglefowl Wing", "", "listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 4, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
+				addItem(38, "Cooked Junglefowl Wing", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(4, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 4, EnumAction.eat, null, false, true, false, true));
+				addItem(39, "Raw Junglefowl Leg", "", "listAllmeatraw", "listAllchickenraw", new FoodStat(2, 0.6F, 0.0F, 310.0F, 0.1F, 0, 0, 0, 0, 5, EnumAction.eat, null, false, true, false, true, Potion.hunger.id, 1000, 1, 20));
+				addItem(40, "Cooked Junglefowl Leg", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 10, EnumAction.eat, null, false, true, false, true));
+				addItem(41, "Fried Junglefowl Leg", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 26, EnumAction.eat, null, false, true, false, true));
+				addItem(42, "Fried Junglefowl Wing", "", "listAllmeatcooked", "listAllchickencooked", new FoodStat(5, 0.6F, 0.0F, 311.0F, 0.5F, 0, 0, 0, 0, 26, EnumAction.eat, null, false, true, false, true));
+				addItem(43, "Junglefowl Egg", "", "listAllegg");
+				addItem(44, "Sulphuric Feather", "Smells Rotten", "itemFeather", "feather", "craftingFeather");
 
-			QTI.tomatoSauce.set(ST.make(this, 1, 1000));
-			QTI.salsaMild.set(ST.make(this, 1, 1001));
-			QTI.salsaMedium.set(ST.make(this, 1, 1002));
-			QTI.salsaMagmatic.set(ST.make(this, 1, 1003));
+				addItem(1000, "Tomato Sauce", "", UT.Fluids.make("tomatosauce", 250L), FoodStatFluid.INSTANCE);
+				addItem(1001, "Salsa", "Mild", UT.Fluids.make("mildsalsa", 250L), FoodStatFluid.INSTANCE);
+				addItem(1002, "Salsa", "Medium", UT.Fluids.make("salsa", 250L), FoodStatFluid.INSTANCE);
+				addItem(1003, "Salsa", "Magmatic", UT.Fluids.make("hotsalsa", 250L), FoodStatFluid.INSTANCE);
 
-			FurnaceRecipes.smelting().func_151394_a(QTI.turkeyBreastRaw.get(1), QTI.turkeyBreastCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.turkeyLegRaw.get(1), QTI.turkeyLegCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.chickenWingRaw.get(1), QTI.chickenWingCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.turkeyWingRaw.get(1), QTI.turkeyWingCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.chickenLegRaw.get(1), QTI.chickenLegCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.turkeyWholeRaw.get(1), QTI.turkeyWholeCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.chickenBreastRaw.get(1), QTI.chickenBreastCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.chickenWholeRaw.get(1), QTI.chickenWholeCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.frogLegRaw.get(1), QTI.frogLegCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.junglefowlBreastRaw.get(1), QTI.junglefowlBreastCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.junglefowlLegRaw.get(1), QTI.junglefowlLegCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.junglefowlWholeRaw.get(1), QTI.junglefowlWholeCooked.get(1), 1.0F);
-			FurnaceRecipes.smelting().func_151394_a(QTI.junglefowlWingRaw.get(1), QTI.junglefowlWingCooked.get(1), 1.0F);
-			
-			//mix cheese chunks to make mozzarella
-			RM.Mixer.addRecipe2(true, 16L, 16L, OP.chunkGt.mat(MT.Cheese, 2), OP.chunkGt.mat(MT.Cheese, 2), QTI.mozzarella.get(1));
-			//mix cheese powder and milk to make raw parmesan
-			RM.Mixer.addRecipe1(true, 16L, 32L, OP.dustSmall.mat(MT.Cheese, 3), UT.Fluids.make("milk", 1000), null, QTI.parmesanRaw.get(1));
-			//mix raw parmesan and saltwater to make parmesan
-			RM.Bath.addRecipe1(true, 0L, 256L, QTI.parmesanRaw.get(1), UT.Fluids.make("saltwater", 1000), UT.Fluids.make("water", 1000), QTI.parmesan.get(1));
-			RM.Bath.addRecipe1(true, 0L, 256L, QTI.parmesanRaw.get(1), UT.Fluids.make("seawater", 1000), UT.Fluids.make("water", 1000), QTI.parmesan.get(1));
-			RM.Mortar.addRecipe1(true, 16L, 16L, QTI.parmesan.get(1), QTI.parmesanGrated.get(1));
-			
-			//replace "dough with ketchup" with "dough with sauce", and cheese slice pizza with mozzarella pizza
-			CR.remout(IL.Food_Dough_Flat_Ketchup.get(1));
-			CR.remout(IL.Food_Pizza_Cheese_Raw.get(1));
-			CR.remout(IL.Food_Pizza_Meat_Raw.get(1));
-			CR.remout(IL.Food_Pizza_Veggie_Raw.get(1));
-			CR.remout(IL.Food_Pizza_Ananas_Raw.get(1));
-			CR.shapeless(QTI.doughFlatSauce.get(1), CR.DEF_NAC, new Object[] { ST.make(this, 1, 1000), IL.Food_Dough_Flat });
-			CR.shapeless(QTI.doughFlatSauce.get(2), CR.DEF_NAC, new Object[] { ST.make(this, 1, 1000), IL.Food_Dough_Flat, IL.Food_Dough_Flat });
-			CR.shapeless(QTI.doughFlatSauce.get(3), CR.DEF_NAC, new Object[] { ST.make(this, 1, 1000), IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat });
-			CR.shapeless(QTI.doughFlatSauce.get(4), CR.DEF_NAC, new Object[] { ST.make(this, 1, 1000), IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat });
-			CR.shapeless(QTI.doughFlatSauce.get(5), CR.DEF_NAC, new Object[] { ST.make(this, 1, 1000), IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat });
-			CR.shapeless(IL.Food_Pizza_Cheese_Raw.get(1), CR.DEF, new Object[] {QTI.doughFlatSauce, QTI.mozzarella, QTI.mozzarella, QTI.mozzarella});
-			CR.shapeless(IL.Food_Pizza_Meat_Raw.get(1), CR.DEF, new Object[] {QTI.doughFlatSauce, QTI.mozzarella, OP.dust.dat(MT.MeatCooked)});
-			CR.shapeless(IL.Food_Pizza_Meat_Raw.get(1), CR.DEF, new Object[] {QTI.doughFlatSauce, QTI.mozzarella, OP.scrap.dat(MT.MeatCooked)});
-			CR.shapeless(IL.Food_Pizza_Veggie_Raw.get(1), CR.DEF, new Object[] {QTI.doughFlatSauce, QTI.mozzarella, IL.Food_Cucumber_Sliced, IL.Food_Tomato_Sliced, IL.Food_Onion_Sliced});
-			CR.shapeless(IL.Food_Pizza_Ananas_Raw.get(1), CR.DEF, new Object[] {QTI.doughFlatSauce,  IL.Food_Ananas_Sliced, IL.Food_Ananas_Sliced, IL.Food_Ham_Slice_Cooked, QTI.mozzarella});
-			
-			//cut chicken into legs and breasts
-			CR.shapeless(QTI.chickenLegRaw.get(2), CR.DEF, new Object[]{QTI.chickenWholeRaw, "craftingToolKnife"});
-			CR.shapeless(QTI.chickenLegCooked.get(2), CR.DEF, new Object[]{QTI.chickenWholeCooked, "craftingToolKnife"});
-			CR.shapeless(QTI.turkeyLegRaw.get(2), CR.DEF, new Object[]{QTI.turkeyWholeRaw, "craftingToolKnife"});
-			CR.shapeless(QTI.turkeyLegCooked.get(2), CR.DEF, new Object[]{QTI.turkeyWholeCooked, "craftingToolKnife"});
-			CR.shapeless(QTI.junglefowlLegRaw.get(2), CR.DEF, new Object[]{QTI.junglefowlWholeRaw, "craftingToolKnife"});
-			CR.shapeless(QTI.junglefowlLegCooked.get(2), CR.DEF, new Object[]{QTI.junglefowlWholeCooked, "craftingToolKnife"});
+				QTI.mozzarella.set(ST.make(this, 1, 0));
+				QTI.parmesanRaw.set(ST.make(this, 1, 1));
+				QTI.parmesan.set(ST.make(this, 1, 2));
+				QTI.parmesanGrated.set(ST.make(this, 1, 3));
+				QTI.doughFlatSauce.set(ST.make(this, 1, 4));
+				QTI.turkeyBreastRaw.set(ST.make(this, 1, 5));
+				QTI.turkeyBreastCooked.set(ST.make(this, 1, 6));
+				QTI.turkeyLegRaw.set(ST.make(this, 1, 7));
+				QTI.turkeyLegCooked.set(ST.make(this, 1, 8));
+				QTI.chickenWingRaw.set(ST.make(this, 1, 9));
+				QTI.chickenWingCooked.set(ST.make(this, 1, 10));
+				QTI.turkeyWingRaw.set(ST.make(this, 1, 11));
+				QTI.turkeyWingCooked.set(ST.make(this, 1, 12));
+				QTI.turkeyEgg.set(ST.make(this, 1, 13));
+				QTI.turkeyEggHardBoiled.set(ST.make(this, 1, 14));
+				QTI.chickenEggHardBoiled.set(ST.make(this, 1, 15));
+				QTI.chickenLegRaw.set(ST.make(this, 1, 16));
+				QTI.chickenLegCooked.set(ST.make(this, 1, 17));
+				QTI.chickenLegFried.set(ST.make(this, 1, 18));
+				QTI.turkeyLegFried.set(ST.make(this, 1, 19));
+				QTI.chickenWingFried.set(ST.make(this, 1, 20));
+				QTI.turkeyWingFried.set(ST.make(this, 1, 21));
+				QTI.turkeyFeather.set(ST.make(this, 1, 22));
+				QTI.turkeyWholeRaw.set(ST.make(this, 1, 23));
+				QTI.turkeyWholeCooked.set(ST.make(this, 1, 24));
+				QTI.chickenBreastRaw.set(ST.make(this, 1, 25));
+				QTI.chickenBreastCooked.set(ST.make(this, 1, 26));
+				QTI.chickenWholeRaw.set(ST.make(this, 1, 27));
+				QTI.chickenWholeCooked.set(ST.make(this, 1, 28));
+				QTI.frogLegRaw.set(ST.make(this, 1, 29));
+				QTI.frogLegCooked.set(ST.make(this, 1, 30));
+				QTI.frogEggs.set(ST.make(this, 1, 31));
+				QTI.chickenEgg.set(ST.make(this, 1, 32));
+				QTI.junglefowlWholeRaw.set(ST.make(this, 1, 33));
+				QTI.junglefowlWholeCooked.set(ST.make(this, 1, 34));
+				QTI.junglefowlBreastRaw.set(ST.make(this, 1, 35));
+				QTI.junglefowlBreastCooked.set(ST.make(this, 1, 36));
+				QTI.junglefowlWingRaw.set(ST.make(this, 1, 37));
+				QTI.junglefowlWingCooked.set(ST.make(this, 1, 38));
+				QTI.junglefowlLegRaw.set(ST.make(this, 1, 39));
+				QTI.junglefowlLegCooked.set(ST.make(this, 1, 40));
+				QTI.junglefowlLegFried.set(ST.make(this, 1, 41));
+				QTI.junglefowlWingFried.set(ST.make(this, 1, 42));
+				QTI.junglefowlEgg.set(ST.make(this, 1, 43));
 
-			//fry chicken
-			RM.Bath.addRecipe1(true, 0L, 16L, QTI.chickenLegRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.chickenLegFried.get(1));
-			RM.Bath.addRecipe1(true, 0L, 16L, QTI.chickenWingRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.chickenWingFried.get(1));
-			RM.Bath.addRecipe1(true, 0L, 16L, QTI.turkeyLegRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.turkeyLegFried.get(1));
-			RM.Bath.addRecipe1(true, 0L, 16L, QTI.turkeyWingRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.turkeyWingFried.get(1));
-			RM.Bath.addRecipe1(true, 0L, 16L, QTI.junglefowlLegRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.junglefowlLegFried.get(1));
-			RM.Bath.addRecipe1(true, 0L, 16L, QTI.junglefowlWingRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.junglefowlLegFried.get(1));
+				QTI.tomatoSauce.set(ST.make(this, 1, 1000));
+				QTI.salsaMild.set(ST.make(this, 1, 1001));
+				QTI.salsaMedium.set(ST.make(this, 1, 1002));
+				QTI.salsaMagmatic.set(ST.make(this, 1, 1003));
 
-			//sulphur feather
-			RM.Mortar.addRecipe1(true, 0L, 16L, make(44), OP.dustSmall.mat(MT.Gunpowder, 1));
+				FurnaceRecipes.smelting().func_151394_a(QTI.turkeyBreastRaw.get(1), QTI.turkeyBreastCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.turkeyLegRaw.get(1), QTI.turkeyLegCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.chickenWingRaw.get(1), QTI.chickenWingCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.turkeyWingRaw.get(1), QTI.turkeyWingCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.chickenLegRaw.get(1), QTI.chickenLegCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.turkeyWholeRaw.get(1), QTI.turkeyWholeCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.chickenBreastRaw.get(1), QTI.chickenBreastCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.chickenWholeRaw.get(1), QTI.chickenWholeCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.frogLegRaw.get(1), QTI.frogLegCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.junglefowlBreastRaw.get(1), QTI.junglefowlBreastCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.junglefowlLegRaw.get(1), QTI.junglefowlLegCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.junglefowlWholeRaw.get(1), QTI.junglefowlWholeCooked.get(1), 1.0F);
+				FurnaceRecipes.smelting().func_151394_a(QTI.junglefowlWingRaw.get(1), QTI.junglefowlWingCooked.get(1), 1.0F);
 
-			//make sure turkey feathers can be quills too
-			CR.shapeless(ST.make(Items.writable_book, 1, 0), CR.DEF, new Object[]{ST.make(Items.book, 1, 0), "feather", "dyeBlack"});
-			
-			//temporary ketchup -> tomato sauce recipe
-			CR.shapeless(QTI.tomatoSauce.get(1), CR.DEF, new Object[] {"foodKetchup", "cropTomato"});
-			
-		}
+				//mix cheese chunks to make mozzarella
+				RM.Mixer.addRecipe2(true, 16L, 16L, OP.chunkGt.mat(MT.Cheese, 2), OP.chunkGt.mat(MT.Cheese, 2), QTI.mozzarella.get(1));
+				//mix cheese powder and milk to make raw parmesan
+				RM.Mixer.addRecipe1(true, 16L, 32L, OP.dustSmall.mat(MT.Cheese, 3), UT.Fluids.make("milk", 1000), null, QTI.parmesanRaw.get(1));
+				//mix raw parmesan and saltwater to make parmesan
+				RM.Bath.addRecipe1(true, 0L, 256L, QTI.parmesanRaw.get(1), UT.Fluids.make("saltwater", 1000), UT.Fluids.make("water", 1000), QTI.parmesan.get(1));
+				RM.Bath.addRecipe1(true, 0L, 256L, QTI.parmesanRaw.get(1), UT.Fluids.make("seawater", 1000), UT.Fluids.make("water", 1000), QTI.parmesan.get(1));
+				RM.Mortar.addRecipe1(true, 16L, 16L, QTI.parmesan.get(1), QTI.parmesanGrated.get(1));
+
+				//replace "dough with ketchup" with "dough with sauce", and cheese slice pizza with mozzarella pizza
+				CR.remout(IL.Food_Dough_Flat_Ketchup.get(1));
+				CR.remout(IL.Food_Pizza_Cheese_Raw.get(1));
+				CR.remout(IL.Food_Pizza_Meat_Raw.get(1));
+				CR.remout(IL.Food_Pizza_Veggie_Raw.get(1));
+				CR.remout(IL.Food_Pizza_Ananas_Raw.get(1));
+				CR.shapeless(QTI.doughFlatSauce.get(1), CR.DEF_NAC, new Object[]{ST.make(this, 1, 1000), IL.Food_Dough_Flat});
+				CR.shapeless(QTI.doughFlatSauce.get(2), CR.DEF_NAC, new Object[]{ST.make(this, 1, 1000), IL.Food_Dough_Flat, IL.Food_Dough_Flat});
+				CR.shapeless(QTI.doughFlatSauce.get(3), CR.DEF_NAC, new Object[]{ST.make(this, 1, 1000), IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat});
+				CR.shapeless(QTI.doughFlatSauce.get(4), CR.DEF_NAC, new Object[]{ST.make(this, 1, 1000), IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat});
+				CR.shapeless(QTI.doughFlatSauce.get(5), CR.DEF_NAC, new Object[]{ST.make(this, 1, 1000), IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat, IL.Food_Dough_Flat});
+				CR.shapeless(IL.Food_Pizza_Cheese_Raw.get(1), CR.DEF, new Object[]{QTI.doughFlatSauce, QTI.mozzarella, QTI.mozzarella, QTI.mozzarella});
+				CR.shapeless(IL.Food_Pizza_Meat_Raw.get(1), CR.DEF, new Object[]{QTI.doughFlatSauce, QTI.mozzarella, OP.dust.dat(MT.MeatCooked)});
+				CR.shapeless(IL.Food_Pizza_Meat_Raw.get(1), CR.DEF, new Object[]{QTI.doughFlatSauce, QTI.mozzarella, OP.scrap.dat(MT.MeatCooked)});
+				CR.shapeless(IL.Food_Pizza_Veggie_Raw.get(1), CR.DEF, new Object[]{QTI.doughFlatSauce, QTI.mozzarella, IL.Food_Cucumber_Sliced, IL.Food_Tomato_Sliced, IL.Food_Onion_Sliced});
+				CR.shapeless(IL.Food_Pizza_Ananas_Raw.get(1), CR.DEF, new Object[]{QTI.doughFlatSauce, IL.Food_Ananas_Sliced, IL.Food_Ananas_Sliced, IL.Food_Ham_Slice_Cooked, QTI.mozzarella});
+
+				//cut chicken into legs and breasts
+				CR.shapeless(QTI.chickenLegRaw.get(2), CR.DEF, new Object[]{QTI.chickenWholeRaw, "craftingToolKnife"});
+				CR.shapeless(QTI.chickenLegCooked.get(2), CR.DEF, new Object[]{QTI.chickenWholeCooked, "craftingToolKnife"});
+				CR.shapeless(QTI.turkeyLegRaw.get(2), CR.DEF, new Object[]{QTI.turkeyWholeRaw, "craftingToolKnife"});
+				CR.shapeless(QTI.turkeyLegCooked.get(2), CR.DEF, new Object[]{QTI.turkeyWholeCooked, "craftingToolKnife"});
+				CR.shapeless(QTI.junglefowlLegRaw.get(2), CR.DEF, new Object[]{QTI.junglefowlWholeRaw, "craftingToolKnife"});
+				CR.shapeless(QTI.junglefowlLegCooked.get(2), CR.DEF, new Object[]{QTI.junglefowlWholeCooked, "craftingToolKnife"});
+
+				//fry chicken
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.chickenLegRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.chickenLegFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.chickenWingRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.chickenWingFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.turkeyLegRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.turkeyLegFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.turkeyWingRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.turkeyWingFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.junglefowlLegRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.junglefowlLegFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.junglefowlWingRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.junglefowlLegFried.get(1));
+
+				//sulphur feather
+				RM.Mortar.addRecipe1(true, 0L, 16L, make(44), OP.dustSmall.mat(MT.Gunpowder, 1));
+
+				//make sure turkey feathers can be quills too
+				CR.shapeless(ST.make(Items.writable_book, 1, 0), CR.DEF, new Object[]{ST.make(Items.book, 1, 0), "feather", "dyeBlack"});
+
+				//temporary ketchup -> tomato sauce recipe
+				CR.shapeless(QTI.tomatoSauce.get(1), CR.DEF, new Object[]{"foodKetchup", "cropTomato"});
+			}
 
 			@Override
 			public void addAdditionalToolTips(List aList, ItemStack aStack, boolean aF3_H) {
 				super.addAdditionalToolTips(aList, aStack, aF3_H);
 				NBTTagCompound tag = UT.NBT.getOrCreate(aStack);
-				if (tag.hasKey("QTgenes"))
-				{
-					if (tag.hasKey("Timer"))
-					{
-						if (net.minecraft.client.Minecraft.getMinecraft().theWorld.getTotalWorldTime() > tag.getLong("Timer"))
-						{
+				if (tag.hasKey("QTgenes")) {
+					if (tag.hasKey("Timer")) {
+						if (net.minecraft.client.Minecraft.getMinecraft().theWorld.getTotalWorldTime() > tag.getLong("Timer")) {
 							aList.add("Ready to hatch!");
 						} else {
 							aList.add("Will hatch in " + (tag.getLong("Timer") - net.minecraft.client.Minecraft.getMinecraft().theWorld.getTotalWorldTime()));
@@ -576,177 +568,163 @@ public class RegisterItems {
 			@Override
 			public int getColorFromItemStack(ItemStack item, int rp) {
 				NBTTagCompound tag = UT.NBT.getOrCreate(item);
-				if (tag.hasKey("itemColor"))
-				{
+				if (tag.hasKey("itemColor")) {
 					return tag.getInteger("itemColor");
-				} else
-				{
+				} else {
 					return super.getColorFromItemStack(item, rp);
 				}
 			}
 
 			@Override
-		public boolean onEntityItemUpdate(EntityItem entityItem)
-	    {
-			if (entityItem.worldObj.isRemote) return false;
-			switch(entityItem.getEntityItem().getItemDamage())
-			{
-				case 31:
-					if (entityItem.isInsideOfMaterial(Material.water))
-					{
-						if (entityItem.worldObj.rand.nextInt(4000) == 1)
-						{
-							for (int q = 0; q < entityItem.getEntityItem().stackSize; q++)
-							{
-								EntityFrog frog = new EntityFrog(entityItem.worldObj);
-								frog.setPosition(entityItem.posX, entityItem.posY, entityItem.posZ);
-								frog.setGrowingAge(-8000);
-								entityItem.worldObj.spawnEntityInWorld(frog);
-								if (q > 3) break;
-							}
-							entityItem.setDead();
-							return true;
-						}
-					}
-					break;
-				case 13:
-				case 32:
-				case 43:
-					ItemStack IT = entityItem.getEntityItem();
-					NBTTagCompound nbt = UT.NBT.getOrCreate(IT);
-					if (nbt.hasKey("Timer"))
-					{
-						if (entityItem.worldObj.getTotalWorldTime() > nbt.getLong("Timer"))
-						{
-							if (nbt.hasKey("QTgenes"))
-							{
-								EntityPhasianidae ep = new EntityPhasianidae(entityItem.worldObj);
-								ep.setPosition(entityItem.posX, entityItem.posY, entityItem.posZ);
-								int maturity = nbt.getCompoundTag("QTgenes").getShort("maturity") * -1;
-								ep.readEntityFromNBT(nbt);
-								ep.setGrowingAge(maturity);
-								entityItem.worldObj.spawnEntityInWorld(ep);
+			public boolean onEntityItemUpdate(EntityItem entityItem) {
+				if (entityItem.worldObj.isRemote) return false;
+				switch (entityItem.getEntityItem().getItemDamage()) {
+					case 31:
+						if (entityItem.isInsideOfMaterial(Material.water)) {
+							if (entityItem.worldObj.rand.nextInt(4000) == 1) {
+								for (int q = 0; q < entityItem.getEntityItem().stackSize; q++) {
+									EntityFrog frog = new EntityFrog(entityItem.worldObj);
+									frog.setPosition(entityItem.posX, entityItem.posY, entityItem.posZ);
+									frog.setGrowingAge(-8000);
+									entityItem.worldObj.spawnEntityInWorld(frog);
+									if (q > 3) break;
+								}
 								entityItem.setDead();
 								return true;
 							}
 						}
+						break;
+					case 13:
+					case 32:
+					case 43:
+						ItemStack IT = entityItem.getEntityItem();
+						NBTTagCompound nbt = UT.NBT.getOrCreate(IT);
+						if (nbt.hasKey("Timer")) {
+							if (entityItem.worldObj.getTotalWorldTime() > nbt.getLong("Timer")) {
+								if (nbt.hasKey("QTgenes")) {
+									EntityPhasianidae ep = new EntityPhasianidae(entityItem.worldObj);
+									ep.setPosition(entityItem.posX, entityItem.posY, entityItem.posZ);
+									int maturity = nbt.getCompoundTag("QTgenes").getShort("maturity") * -1;
+									ep.readEntityFromNBT(nbt);
+									ep.setGrowingAge(maturity);
+									entityItem.worldObj.spawnEntityInWorld(ep);
+									entityItem.setDead();
+									return true;
+								}
+							}
+						}
+						break;
+					default:
+						break;
+				}
+				return false;
+			}
+
+			@Override
+			public ItemStack getContainerItem(ItemStack aStack) {
+				if (aStack.getItemDamage() >= 1000 && aStack.getItemDamage() < 2000) {
+					return IL.Bottle_Empty.get(1L);
+				}
+				switch (aStack.getItemDamage()) {
+					case 23: {
+						return ST.make(this, 3, 5);
 					}
-					break;
-				default:
-					break;
+					case 24: {
+						return ST.make(this, 3, 6);
+					}
+					case 27: {
+						return ST.make(this, 2, 25);
+					}
+					case 28: {
+						return ST.make(this, 2, 26);
+					}
+					case 33: {
+						return ST.make(this, 2, 35);
+					}
+					case 34: {
+						return ST.make(this, 2, 36);
+					}
+					default: {
+						return null;
+					}
+				}
 			}
-	        return false;
-	    }
-		
-		@Override public ItemStack getContainerItem(ItemStack aStack) {
-			if (aStack.getItemDamage() >= 1000 && aStack.getItemDamage() < 2000) {
-				return IL.Bottle_Empty.get(1L);
-			}
-			switch (aStack.getItemDamage())
-			{
-				case 23:
-				{
-					return ST.make(this, 3, 5);
-				}
-				case 24:
-				{
-					return ST.make(this, 3, 6);
-				}
-				case 27:
-				{
-					return ST.make(this, 2, 25);
-				}
-				case 28:
-				{
-					return ST.make(this, 2, 26);
-				}
-				case 33:
-				{
-					return ST.make(this, 2, 35);
-				}
-				case 34:
-				{
-					return ST.make(this, 2, 36);
-				}
-				default:
-				{
-					return null;
-				}
-			}			
-		}});
-		
+		});
+
 		QTI.qwerFood.getItem().setCreativeTab(CreativeTabs.tabFood);
 		QTI.qwerFood.getItem().setFull3D();
-		
-		new MultiItemRandom(QwerTech.MODID, "qwertech.animals") {@Override public void addItems() {
-			addItem(0, "Spawn Turkey", "", new Behavior_Spawn(EntityTurkey.class));
-			addItem(1, "Spawn Frog", "", new Behavior_Spawn(EntityFrog.class));
-			addItem(2, "Spawn Chicken", "", new Behavior_Spawn(EntityPhasianidae.class));
 
-			addItem(1000, "Frog-in-a-Jar", "Greenie in a Bottle", new Behavior_Spawn(EntityFrog.class));
-			addItem(1001, "Chicken-in-a-Jar", "Bottle O'Birb", new Behavior_Spawn(EntityChicken.class));
-			addItem(1002, "Slime-in-a-Jar", "Greenie in a Bottle", new Behavior_Spawn(EntitySlime.class));
-			addItem(1003, "Magma-in-a-Jar", "Straight from the Nether", new Behavior_Spawn(EntityMagmaCube.class));
-			addItem(1004, "Spider-in-a-Jar", "The humane way", new Behavior_Spawn(EntityCaveSpider.class));
-			addItem(1005, "Silverfish-in-a-Jar", "Not good enough for the goldfish", new Behavior_Spawn(EntitySilverfish.class));
-			addItem(1006, "Bat-in-a-Jar", "Got ham?", new Behavior_Spawn(EntityBat.class));
-			
-			addItem(2000, "Bunny-in-a-Jar", "Thumpernickel Bread");
-			addItem(2001, "Birb-in-a-Jar", LH.Chat.CYAN + "4 New Tweets");
-			addItem(2002, "Spiderling-in-a-Jar", "Cute!");
-			addItem(2003, "SIMJ Squirrel-in-my-Jar", "Squirrels! Squirrels!");
-			addItem(2004, "Raven-in-a-Jar", LH.Chat.UNDERLINE + LH.Chat.BOLD + "NEVERMORE");
-			addItem(2005, "Baby-Birb-in-a-Jar", "I tot I taw a puddy tat!");
-			addItem(2006, "Amazing Slime-In-a-Jar", "Gooey Deschanel");
-			
-			if (MD.TF.mLoaded)
-			{
-				try {
-					Class bunny = Class.forName("twilightforest.entity.passive.EntityTFBunny");
-					this.addItemBehavior(2000, new Behavior_Spawn(bunny));
-					Class birb = Class.forName("twilightforest.entity.passive.EntityTFBird");
-					this.addItemBehavior(2001, new Behavior_Spawn(birb));
-					Class spiderling = Class.forName("twilightforest.entity.EntityTFSwarmSpider");
-					this.addItemBehavior(2002, new Behavior_Spawn(spiderling));
-					Class squirrel = Class.forName("twilightforest.entity.passive.EntityTFSquirrel");
-					this.addItemBehavior(2003, new Behavior_Spawn(squirrel));
-					Class raven = Class.forName("twilightforest.entity.passive.EntityTFRaven");
-					this.addItemBehavior(2004, new Behavior_Spawn(raven));
-					Class babybirb = Class.forName("twilightforest.entity.passive.EntityTFTinyBird");
-					this.addItemBehavior(2005, new Behavior_Spawn(babybirb));
-					Class mazeslime = Class.forName("twilightforest.entity.EntityTFMazeSlime");
-					this.addItemBehavior(2006, new Behavior_Spawn(mazeslime));
-				} catch (Throwable T) {
-					System.out.println("Twilight Forest was loaded, but unable to add jars!");
-					T.printStackTrace();
+		new MultiItemRandom(QwerTech.MODID, "qwertech.animals") {
+			@Override
+			public void addItems() {
+				addItem(0, "Spawn Turkey", "", new Behavior_Spawn(EntityTurkey.class));
+				addItem(1, "Spawn Frog", "", new Behavior_Spawn(EntityFrog.class));
+				addItem(2, "Spawn Chicken", "", new Behavior_Spawn(EntityPhasianidae.class));
+
+				addItem(1000, "Frog-in-a-Jar", "Greenie in a Bottle", new Behavior_Spawn(EntityFrog.class));
+				addItem(1001, "Chicken-in-a-Jar", "Bottle O'Birb", new Behavior_Spawn(EntityChicken.class));
+				addItem(1002, "Slime-in-a-Jar", "Greenie in a Bottle", new Behavior_Spawn(EntitySlime.class));
+				addItem(1003, "Magma-in-a-Jar", "Straight from the Nether", new Behavior_Spawn(EntityMagmaCube.class));
+				addItem(1004, "Spider-in-a-Jar", "The humane way", new Behavior_Spawn(EntityCaveSpider.class));
+				addItem(1005, "Silverfish-in-a-Jar", "Not good enough for the goldfish", new Behavior_Spawn(EntitySilverfish.class));
+				addItem(1006, "Bat-in-a-Jar", "Got ham?", new Behavior_Spawn(EntityBat.class));
+
+				addItem(2000, "Bunny-in-a-Jar", "Thumpernickel Bread");
+				addItem(2001, "Birb-in-a-Jar", LH.Chat.CYAN + "4 New Tweets");
+				addItem(2002, "Spiderling-in-a-Jar", "Cute!");
+				addItem(2003, "SIMJ Squirrel-in-my-Jar", "Squirrels! Squirrels!");
+				addItem(2004, "Raven-in-a-Jar", LH.Chat.UNDERLINE + LH.Chat.BOLD + "NEVERMORE");
+				addItem(2005, "Baby-Birb-in-a-Jar", "I tot I taw a puddy tat!");
+				addItem(2006, "Amazing Slime-In-a-Jar", "Gooey Deschanel");
+
+				if (MD.TF.mLoaded) {
+					try {
+						Class bunny = Class.forName("twilightforest.entity.passive.EntityTFBunny");
+						this.addItemBehavior(2000, new Behavior_Spawn(bunny));
+						Class birb = Class.forName("twilightforest.entity.passive.EntityTFBird");
+						this.addItemBehavior(2001, new Behavior_Spawn(birb));
+						Class spiderling = Class.forName("twilightforest.entity.EntityTFSwarmSpider");
+						this.addItemBehavior(2002, new Behavior_Spawn(spiderling));
+						Class squirrel = Class.forName("twilightforest.entity.passive.EntityTFSquirrel");
+						this.addItemBehavior(2003, new Behavior_Spawn(squirrel));
+						Class raven = Class.forName("twilightforest.entity.passive.EntityTFRaven");
+						this.addItemBehavior(2004, new Behavior_Spawn(raven));
+						Class babybirb = Class.forName("twilightforest.entity.passive.EntityTFTinyBird");
+						this.addItemBehavior(2005, new Behavior_Spawn(babybirb));
+						Class mazeslime = Class.forName("twilightforest.entity.EntityTFMazeSlime");
+						this.addItemBehavior(2006, new Behavior_Spawn(mazeslime));
+					} catch (Throwable T) {
+						System.out.println("Twilight Forest was loaded, but unable to add jars!");
+						T.printStackTrace();
+					}
 				}
+
+				QTI.spawnTurkey.set(ST.make(this, 1, 0));
+				QTI.spawnFrog.set(ST.make(this, 1, 1));
+				QTI.jarFrog.set(ST.make(this, 1, 1000));
+				QTI.jarChicken.set(ST.make(this, 1, 1001));
+				QTI.jarSlime.set(ST.make(this, 1, 1002));
+				QTI.jarMagmaCube.set(ST.make(this, 1, 1003));
+				QTI.jarCaveSpider.set(ST.make(this, 1, 1004));
+				QTI.jarSilverfish.set(ST.make(this, 1, 1005));
+				QTI.jarBat.set(ST.make(this, 1, 1006));
+
+				QTI.jarTFBunny.set(ST.make(this, 1, 2000));
+				QTI.jarTFBird.set(ST.make(this, 1, 2001));
+				QTI.jarTFSpider.set(ST.make(this, 1, 2002));
+				QTI.jarTFSquirrel.set(ST.make(this, 1, 2003));
+				QTI.jarTFRaven.set(ST.make(this, 1, 2004));
+				QTI.jarTFTinyBird.set(ST.make(this, 1, 2005));
+				QTI.jarTFMazeSlime.set(ST.make(this, 1, 2006));
 			}
-			
-			QTI.spawnTurkey.set(ST.make(this, 1, 0));
-			QTI.spawnFrog.set(ST.make(this, 1, 1));
-			QTI.jarFrog.set(ST.make(this, 1, 1000));
-			QTI.jarChicken.set(ST.make(this, 1, 1001));
-			QTI.jarSlime.set(ST.make(this, 1, 1002));
-			QTI.jarMagmaCube.set(ST.make(this, 1, 1003));
-			QTI.jarCaveSpider.set(ST.make(this, 1, 1004));
-			QTI.jarSilverfish.set(ST.make(this, 1, 1005));
-			QTI.jarBat.set(ST.make(this, 1, 1006));
-			
-			QTI.jarTFBunny.set(ST.make(this, 1, 2000));
-			QTI.jarTFBird.set(ST.make(this, 1, 2001));
-			QTI.jarTFSpider.set(ST.make(this, 1, 2002));
-			QTI.jarTFSquirrel.set(ST.make(this, 1, 2003));
-			QTI.jarTFRaven.set(ST.make(this, 1, 2004));
-			QTI.jarTFTinyBird.set(ST.make(this, 1, 2005));
-			QTI.jarTFMazeSlime.set(ST.make(this, 1, 2006));
-		}
-		
-		@Override public ItemStack getContainerItem(ItemStack aStack) {
-			if (aStack.getItemDamage() >= 1000 && aStack.getItemDamage() < 3000) {
-				return IL.Bottle_Empty.get(1L);
+
+			@Override
+			public ItemStack getContainerItem(ItemStack aStack) {
+				if (aStack.getItemDamage() >= 1000 && aStack.getItemDamage() < 3000) {
+					return IL.Bottle_Empty.get(1L);
+				}
+				return null;
 			}
-			return null;
-		}
 
 			@Override
 			public void addAdditionalToolTips(List aList, ItemStack aStack, boolean aF3_H) {
@@ -766,8 +744,7 @@ public class RegisterItems {
 							}
 						}
 					}
-				} catch (Exception e)
-				{
+				} catch (Exception e) {
 					//nope
 				}
 			}
@@ -776,8 +753,7 @@ public class RegisterItems {
 			public void getSubItems(Item aItem, CreativeTabs aCreativeTab, List aList) {
 				super.getSubItems(aItem, aCreativeTab, aList);
 				Species[] species = MobSpeciesRegistry.getSpeciesList(EntityPhasianidae.class);
-				for (short q = 0; q < species.length; q++)
-				{
+				for (short q = 0; q < species.length; q++) {
 					if (species[q] != null) {
 						Subtype[] subtypes = species[q].subtypes;
 						for (short w = 0; w < subtypes.length; w++) {
@@ -797,45 +773,47 @@ public class RegisterItems {
 				}
 			}
 		};
-		
-		
-		new MultiItemRandom(QwerTech.MODID, "qwertech.armor.upgrades") {@Override public void addItems() {
-			addItem(0, "Dual Steel Springs"					, "Boingy boingy boingy");
-			addItem(1, "Dual Stainless Steel Springs"		, "Boingy boingy boingy");
-			addItem(2, "Dual Brass Springs"					, "Boingy boingy boingy");
-			addItem(3, "Dual Aluminium Springs"				, "Boingy boingy boingy");
-			addItem(4, "Dual Thaumium Springs"				, "Boingy boingy boingy");
-			
-			CR.shapeless(ST.make(this, 1, 0), CR.DEF, new Object[]{"springSmallSteel", "springSmallSteel"});
-			CR.shapeless(ST.make(this, 1, 1), CR.DEF, new Object[]{"springSmallStainlessSteel", "springSmallStainlessSteel"});
-			CR.shapeless(ST.make(this, 1, 2), CR.DEF, new Object[]{"springSmallBrass", "springSmallBrass"});
-			CR.shapeless(ST.make(this, 1, 3), CR.DEF, new Object[]{"springSmallAluminium", "springSmallAluminium"});
-			CR.shapeless(ST.make(this, 1, 4), CR.DEF, new Object[]{"springSmallThaumium", "springSmallThaumium"});
-			
-			IArmorUpgrade upgrade1 = new Upgrade_SpringBoots(MT.Steel);
-			upgrade1.setMaterialAmount(OP.springSmall.mAmount * 2);
-			upgrade1.addUpgradeStack(ST.make(this,1, 0));
-			IArmorUpgrade upgrade2 = new Upgrade_SpringBoots(MT.StainlessSteel);
-			upgrade2.setMaterialAmount(OP.springSmall.mAmount * 2);
-			upgrade2.addUpgradeStack(ST.make(this, 1, 1));
-			IArmorUpgrade upgrade3 = new Upgrade_SpringBoots(MT.Brass);
-			upgrade3.setMaterialAmount(OP.springSmall.mAmount * 2);
-			upgrade3.addUpgradeStack(ST.make(this,1, 2));
-			IArmorUpgrade upgrade4 = new Upgrade_SpringBoots(MT.Al);
-			upgrade4.setMaterialAmount(OP.springSmall.mAmount * 2);
-			upgrade4.addUpgradeStack(ST.make(this, 1, 3));
-			IArmorUpgrade upgrade5 = new Upgrade_SpringBoots(MT.Thaumium);
-			upgrade5.setMaterialAmount(OP.springSmall.mAmount * 2);
-			upgrade5.addUpgradeStack(ST.make(this, 1, 4));
-			
-			ArmorUpgradeRegistry.instance.addUpgrade(0, upgrade1);
-			ArmorUpgradeRegistry.instance.addUpgrade(1, upgrade2);
-			ArmorUpgradeRegistry.instance.addUpgrade(2, upgrade3);
-			ArmorUpgradeRegistry.instance.addUpgrade(3, upgrade4);
-			ArmorUpgradeRegistry.instance.addUpgrade(4, upgrade5);
-		}
+
+
+		new MultiItemRandom(QwerTech.MODID, "qwertech.armor.upgrades") {
+			@Override
+			public void addItems() {
+				addItem(0, "Dual Steel Springs", "Boingy boingy boingy");
+				addItem(1, "Dual Stainless Steel Springs", "Boingy boingy boingy");
+				addItem(2, "Dual Brass Springs", "Boingy boingy boingy");
+				addItem(3, "Dual Aluminium Springs", "Boingy boingy boingy");
+				addItem(4, "Dual Thaumium Springs", "Boingy boingy boingy");
+
+				CR.shapeless(ST.make(this, 1, 0), CR.DEF, new Object[]{"springSmallSteel", "springSmallSteel"});
+				CR.shapeless(ST.make(this, 1, 1), CR.DEF, new Object[]{"springSmallStainlessSteel", "springSmallStainlessSteel"});
+				CR.shapeless(ST.make(this, 1, 2), CR.DEF, new Object[]{"springSmallBrass", "springSmallBrass"});
+				CR.shapeless(ST.make(this, 1, 3), CR.DEF, new Object[]{"springSmallAluminium", "springSmallAluminium"});
+				CR.shapeless(ST.make(this, 1, 4), CR.DEF, new Object[]{"springSmallThaumium", "springSmallThaumium"});
+
+				IArmorUpgrade upgrade1 = new Upgrade_SpringBoots(MT.Steel);
+				upgrade1.setMaterialAmount(OP.springSmall.mAmount * 2);
+				upgrade1.addUpgradeStack(ST.make(this, 1, 0));
+				IArmorUpgrade upgrade2 = new Upgrade_SpringBoots(MT.StainlessSteel);
+				upgrade2.setMaterialAmount(OP.springSmall.mAmount * 2);
+				upgrade2.addUpgradeStack(ST.make(this, 1, 1));
+				IArmorUpgrade upgrade3 = new Upgrade_SpringBoots(MT.Brass);
+				upgrade3.setMaterialAmount(OP.springSmall.mAmount * 2);
+				upgrade3.addUpgradeStack(ST.make(this, 1, 2));
+				IArmorUpgrade upgrade4 = new Upgrade_SpringBoots(MT.Al);
+				upgrade4.setMaterialAmount(OP.springSmall.mAmount * 2);
+				upgrade4.addUpgradeStack(ST.make(this, 1, 3));
+				IArmorUpgrade upgrade5 = new Upgrade_SpringBoots(MT.Thaumium);
+				upgrade5.setMaterialAmount(OP.springSmall.mAmount * 2);
+				upgrade5.addUpgradeStack(ST.make(this, 1, 4));
+
+				ArmorUpgradeRegistry.instance.addUpgrade(0, upgrade1);
+				ArmorUpgradeRegistry.instance.addUpgrade(1, upgrade2);
+				ArmorUpgradeRegistry.instance.addUpgrade(2, upgrade3);
+				ArmorUpgradeRegistry.instance.addUpgrade(3, upgrade4);
+				ArmorUpgradeRegistry.instance.addUpgrade(4, upgrade5);
+			}
 		};
-		
+
 		//0   	-3999: iron bucket
 		//4000	-4999: bismuth bucket
 		//5000	-5999: bismuth bronze bucket
@@ -846,146 +824,192 @@ public class RegisterItems {
 		//10000	-10999: tin bucket
 		//11000	-11999: zinc bucket
 		//12000	-15999: bottle
-		QTI.buckets.set(new MultiItemRandom(QwerTech.MODID, "qwertech.fluidcontainers") {@Override public void addItems() {
-			addItem(0, "Bucket of Chemical X", LH.Chat.RED + "Unstable", QTMT.ChemicalX.liquid(CS.U, true));
-			addItem(1, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-			addItem(2, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+		QTI.buckets.set(new MultiItemRandom(QwerTech.MODID, "qwertech.fluidcontainers") {
+			@Override
+			public void addItems() {
+				addItem(0, "Bucket of Chemical X", LH.Chat.RED + "Unstable", QTMT.ChemicalX.liquid(CS.U, true));
+				addItem(1, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(2, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 
-			addItem(4001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-            addItem(4002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(4001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(4002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 
-			addItem(5001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-            addItem(5002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(5001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(5002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 
-			addItem(6001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-            addItem(6002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(6001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(6002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 
-			addItem(7001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-            addItem(7002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(7001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(7002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 
-			addItem(8001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-            addItem(8002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(8001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(8002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 
-            addItem(9001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-            addItem(9002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(9001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(9002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 
-			addItem(10001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-            addItem(10002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(10001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(10002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 
-            addItem(11001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-            addItem(11002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(11001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(11002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 
-			addItem(12000, "Bottle of Chemical X", LH.Chat.CYAN + "Volatile", QTMT.ChemicalX.liquid(CS.U, true));
-			addItem(12001, "Bottle of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-            addItem(12002, "Bottle of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
-		}
-		
-		@Override public ItemStack getContainerItem(ItemStack aStack) {
-			int damage = aStack.getItemDamage();
-			if (damage < 4000)
-			{
-				return ST.make(Items.bucket, 1, 0);
-			} else if (damage < 5000)
-			{
-				return IL.Wooden_Bucket_Bismuth.get(1);
-			} else if (damage < 6000)
-			{
-				return IL.Wooden_Bucket_BismuthBronze.get(1);
-			} else if (damage < 7000)
-			{
-				return IL.Wooden_Bucket_Brass.get(1);
-			} else if (damage < 8000)
-			{
-				return IL.Wooden_Bucket_Bronze.get(1);
-			} else if (damage < 9000)
-			{
-				return IL.Wooden_Bucket_Copper.get(1);
-			} else if (damage < 10000)
-			{
-				return IL.Wooden_Bucket_Lead.get(1);
-			} else if (damage < 11000)
-			{
-				return IL.Wooden_Bucket_Tin.get(1);
-			} else if (damage < 12000)
-			{
-				return IL.Wooden_Bucket_Zinc.get(1);
-			} else {
-				return IL.Bottle_Empty.get(1);
+				addItem(12000, "Bottle of Chemical X", LH.Chat.CYAN + "Volatile", QTMT.ChemicalX.liquid(CS.U, true));
+				addItem(12001, "Bottle of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
+				addItem(12002, "Bottle of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
 			}
-		}
 
-		@Override
-		public int getColorFromItemStack(ItemStack stack, int renderpass)
-		{
-			if (renderpass > 0) {
-				return this.getFluid(stack).getFluid().getColor();
-			}
-			return super.getColorFromItemStack(stack, renderpass);
-		}
-
-		Object woodBucket = null;
-		Object metalBucket = null;
-		Object glassBottle = null;
-		@Override
-		public void registerIcons(IIconRegister aIconRegister) {
-			woodBucket = aIconRegister.registerIcon("qwertech:qwertech.internal/woodbucket");
-			metalBucket = aIconRegister.registerIcon("qwertech:qwertech.internal/metalbucket");
-			glassBottle = aIconRegister.registerIcon("qwertech:qwertech.internal/glassbottle");
-		}
-
-		@Override
-		public boolean requiresMultipleRenderPasses()
-		{
-			return true;
-		}
-
-		@Override
-		public int getRenderPasses(int metadata)
-		{
-			return 2;
-		}
-
-		@Override
-		public IIcon getIconIndex(ItemStack stack)
-		{
-			return getIcon(stack, 0);
-		}
-
-		@Override
-		public IIcon getIcon(ItemStack stack, int renderpass)
-		{
-			ItemStack CI = this.getContainerItem(stack);
-			Item I = CI.getItem();
-			if (renderpass <= 0) {
-				return I.getIcon(CI, 0);
-			} else {
-				if (I == Items.bucket)
-				{
-					return (IIcon)metalBucket;
-				} else if (I == IL.Bottle_Empty.getItem())
-				{
-					return (IIcon)glassBottle;
+			@Override
+			public ItemStack getContainerItem(ItemStack aStack) {
+				int damage = aStack.getItemDamage();
+				if (damage < 4000) {
+					return ST.make(Items.bucket, 1, 0);
+				} else if (damage < 5000) {
+					return IL.Wooden_Bucket_Bismuth.get(1);
+				} else if (damage < 6000) {
+					return IL.Wooden_Bucket_BismuthBronze.get(1);
+				} else if (damage < 7000) {
+					return IL.Wooden_Bucket_Brass.get(1);
+				} else if (damage < 8000) {
+					return IL.Wooden_Bucket_Bronze.get(1);
+				} else if (damage < 9000) {
+					return IL.Wooden_Bucket_Copper.get(1);
+				} else if (damage < 10000) {
+					return IL.Wooden_Bucket_Lead.get(1);
+				} else if (damage < 11000) {
+					return IL.Wooden_Bucket_Tin.get(1);
+				} else if (damage < 12000) {
+					return IL.Wooden_Bucket_Zinc.get(1);
+				} else {
+					return IL.Bottle_Empty.get(1);
 				}
-				return (IIcon)woodBucket;
 			}
-		}
 
-		@Override
-		public IIcon getIconFromDamage(int aMetaData) {
-			return getIconFromDamageForRenderPass(aMetaData, 0);
-		}
+			@Override
+			public int getColorFromItemStack(ItemStack stack, int renderpass) {
+				if (renderpass > 0) {
+					return this.getFluid(stack).getFluid().getColor();
+				}
+				return super.getColorFromItemStack(stack, renderpass);
+			}
 
-		@Override
-		public IIcon getIcon(ItemStack aStack, int aRenderPass, EntityPlayer aPlayer, ItemStack aUsedStack, int aUseRemaining) {
-			return this.getIcon(aStack, aRenderPass);
-		}
+			Object woodBucket = null;
+			Object metalBucket = null;
+			Object glassBottle = null;
 
-		@Override
-		public IIcon getIconFromDamageForRenderPass(int damage, int renderpass)
-		{
-			return this.getIcon(ST.make(this, 1, damage), renderpass);
-		}
+			@Override
+			public void registerIcons(IIconRegister aIconRegister) {
+				woodBucket = aIconRegister.registerIcon("qwertech:qwertech.internal/woodbucket");
+				metalBucket = aIconRegister.registerIcon("qwertech:qwertech.internal/metalbucket");
+				glassBottle = aIconRegister.registerIcon("qwertech:qwertech.internal/glassbottle");
+			}
+
+			@Override
+			public boolean requiresMultipleRenderPasses() {
+				return true;
+			}
+
+			@Override
+			public int getRenderPasses(int metadata) {
+				return 2;
+			}
+
+			@Override
+			public IIcon getIconIndex(ItemStack stack) {
+				return getIcon(stack, 0);
+			}
+
+			@Override
+			public IIcon getIcon(ItemStack stack, int renderpass) {
+				ItemStack CI = this.getContainerItem(stack);
+				Item I = CI.getItem();
+				if (renderpass <= 0) {
+					return I.getIcon(CI, 0);
+				} else {
+					if (I == Items.bucket) {
+						return (IIcon) metalBucket;
+					} else if (I == IL.Bottle_Empty.getItem()) {
+						return (IIcon) glassBottle;
+					}
+					return (IIcon) woodBucket;
+				}
+			}
+
+			@Override
+			public IIcon getIconFromDamage(int aMetaData) {
+				return getIconFromDamageForRenderPass(aMetaData, 0);
+			}
+
+			@Override
+			public IIcon getIcon(ItemStack aStack, int aRenderPass, EntityPlayer aPlayer, ItemStack aUsedStack, int aUseRemaining) {
+				return this.getIcon(aStack, aRenderPass);
+			}
+
+			@Override
+			public IIcon getIconFromDamageForRenderPass(int damage, int renderpass) {
+				return this.getIcon(ST.make(this, 1, damage), renderpass);
+			}
 
 		});
+
+		if (QTConfigs.customBumbles && RegisterBumbles.init()) {
+			RegisterBumbles.CUSTOM_BUMBLES = new CustomItemBumbles(QwerTech.MODID, "qwertech.bumblebee");
+
+			new MultiItemRandom(QwerTech.MODID, "qwertech.comb") {
+				@Override
+				public void addItems() {
+					List<Short> blacklist = new ArrayList<>();
+					for (Map.Entry<Short, BumbleData> e : CUSTOM_BUMBLE_DATA.entrySet()) {
+						BumbleData data = e.getValue();
+						if (blacklist.contains(data.combMeta)) continue;
+						addItem(data.combMeta, data.combName, "", OD.beeComb);
+						RGB.put(data.combMeta, data.rgb);
+						blacklist.add(data.combMeta);
+					}
+				}
+				
+				public IIcon COMB;
+				public final Map<Short, short[]> RGB = new HashMap<>();
+				
+				@Override
+				@SideOnly(Side.CLIENT)
+				public void registerIcons(IIconRegister aIconRegister) {
+						COMB = aIconRegister.registerIcon(mModID + ":" + getUnlocalizedName() + "/comb");
+				}
+
+				@Override
+				public IIcon getIconIndex(ItemStack aStack) {
+					return COMB;
+				}
+
+				@Override
+				public IIcon getIcon(ItemStack aStack, int aRenderPass) {
+					return getIconIndex(aStack);
+				}
+
+				@Override
+				public IIcon getIcon(ItemStack aStack, int aRenderPass, EntityPlayer aPlayer, ItemStack aUsedStack, int aUseRemaining) {
+					return getIcon(aStack, aRenderPass);
+				}
+
+				@Override
+				public IIcon getIconFromDamage(int aMetaData) {
+					return COMB;
+				}
+
+				@Override
+				public IIcon getIconFromDamageForRenderPass(int aMetaData, int aRenderPass) {
+					return COMB;
+				}
+
+				@Override
+				public int getColorFromItemStack(ItemStack comb, int renderPass) {
+					return UT.Code.getRGBInt(RGB.get(ST.meta(comb)));
+				}
+			};
+		} else {
+			QTConfigs.customBumbles = false;
+		}
 	}
 }

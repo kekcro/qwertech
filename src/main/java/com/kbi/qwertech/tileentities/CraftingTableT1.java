@@ -14,7 +14,6 @@ import gregapi.block.multitileentity.IMultiTileEntity.IMTE_OnBlockClicked;
 import gregapi.block.multitileentity.MultiTileEntityBlockInternal;
 import gregapi.block.multitileentity.MultiTileEntityContainer;
 import gregapi.data.CS;
-import gregapi.data.CS.*;
 import gregapi.data.LH;
 import gregapi.data.LH.Chat;
 import gregapi.data.OP;
