@@ -2,11 +2,13 @@ package com.kbi.qwertech.loaders.mod;
 
 import com.kbi.qwertech.QwerTech;
 import com.kbi.qwertech.api.data.QTConfigs;
-import com.kbi.qwertech.tileentities.CraftingTableT1.GUIClientAdvancedCraftingTable;
-import com.kbi.qwertech.tileentities.CraftingTableT2.GUIClientAdvancedCraftingTable2;
+import com.kbi.qwertech.client.gui.GuiQTCraftingTableClient;
+import com.kbi.qwertech.tileentities.CraftingTableT3;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Optional.Interface;
 import cpw.mods.fml.common.Optional.InterfaceList;
 import cpw.mods.fml.common.event.FMLInterModComms;
+import cpw.mods.fml.relauncher.Side;
 import gregapi.NEI_RecipeMap;
 import gregapi.data.MD;
 import gregapi.data.RM;
@@ -34,15 +36,13 @@ public class NEI_QT_Config implements codechicken.nei.api.IConfigureNEI
 	  FMLInterModComms.sendRuntimeMessage(GAPI, "NEIPlugins", "register-crafting-handler", MD.GAPI.mID+"@"+chisel.getRecipeName()+"@"+chisel.getOverlayIdentifier());
 	  codechicken.nei.recipe.GuiCraftingRecipe.craftinghandlers.add(chisel);
 	  codechicken.nei.recipe.GuiUsageRecipe.usagehandlers.add(chisel);
-	  
-	  if (CODE_CLIENT) {
-      	codechicken.nei.api.API.registerGuiOverlay(GUIClientAdvancedCraftingTable.class, "crafting", 80, 17);
-      	codechicken.nei.api.API.registerGuiOverlayHandler(GUIClientAdvancedCraftingTable.class, new codechicken.nei.recipe.DefaultOverlayHandler(55, 11), "crafting");
-      	codechicken.nei.api.API.registerGuiOverlay(GUIClientAdvancedCraftingTable2.class, "crafting", 80, 17);
-      	codechicken.nei.api.API.registerGuiOverlayHandler(GUIClientAdvancedCraftingTable2.class, new codechicken.nei.recipe.DefaultOverlayHandler(55, 11), "crafting");
-      	//codechicken.nei.api.API.registerGuiOverlay(GUIClientAdvancedCraftingTable3.class, "crafting", 80, 17);
-      	//codechicken.nei.api.API.registerGuiOverlayHandler(GUIClientAdvancedCraftingTable3.class, new codechicken.nei.recipe.DefaultOverlayHandler(55, 11), "crafting");
-      }
+
+	  if (FMLCommonHandler.instance().getSide() == Side.CLIENT) {
+		  int oX = 55, oY = 11;
+		  //codechicken.nei.api.API.registerGuiOverlay(GuiQTCraftingTableClient.class, "crafting", oX, oY);
+		  //codechicken.nei.api.API.registerGuiOverlayHandler(GuiQTCraftingTableClient.class, new codechicken.nei.recipe.DefaultOverlayHandler(oX, oY), "crafting");
+
+	  }
 	  sIsAdded = true;
 	}
 	

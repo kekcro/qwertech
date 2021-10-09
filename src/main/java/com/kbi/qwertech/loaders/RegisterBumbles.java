@@ -1,8 +1,10 @@
 package com.kbi.qwertech.loaders;
 
 import com.google.gson.*;
+import com.kbi.qwertech.QwerTech;
 import com.kbi.qwertech.items.CustomItemBumbles;
 import cpw.mods.fml.common.registry.GameRegistry;
+import gregapi.data.CS;
 import gregapi.data.MD;
 import net.minecraft.item.Item;
 
@@ -12,7 +14,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.kbi.qwertech.mixins.QwertechMixinPlugin.L;
+import static com.kbi.qwertech.api.data.QTConfigs.L;
 
 public class RegisterBumbles {
 
@@ -151,7 +153,7 @@ public class RegisterBumbles {
                 if (strings == null) continue;
                 ParentData[] parents = new ParentData[2];
                 for (int i = 0; i < 2; i++) {
-                    String mID = "qwertech", unloc = "qwertech.bumblebee";
+                    String mID = QwerTech.MODID, unloc = CUSTOM_BUMBLES.getUnlocalizedName();
                     short species;
                     String[] split = strings[i].split(":");
                     switch (split.length) {
@@ -161,7 +163,7 @@ public class RegisterBumbles {
                         case 2:
                             if (split[0].equals("gt")) {
                                 mID = MD.GT.mID;
-                                unloc = "gt.multiitem.bumblebee";
+                                unloc = CS.ItemsGT.BUMBLEBEES.getUnlocalizedName();
                             }
                             species = Short.parseShort(split[1]);
                             break;
@@ -176,6 +178,10 @@ public class RegisterBumbles {
                     }
                     Item item = GameRegistry.findItem(mID, unloc);
                     if (item != null) {
+                        if (mID.equals(QwerTech.MODID) && !CUSTOM_BUMBLE_DATA.containsKey(species)) {
+                            L.warn("Parent definition for {} appears to contain an invalid item ({}:{}:{}). Skipping...", data.getValue().bumbleName, mID, unloc, species);
+                            break;
+                        }
                         parents[i] = new ParentData(item, species);
                     }
                 }

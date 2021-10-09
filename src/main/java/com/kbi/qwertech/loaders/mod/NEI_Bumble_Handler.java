@@ -121,7 +121,7 @@ public class NEI_Bumble_Handler extends TemplateRecipeHandler {
                     parent2 = data.parents[1];
                 } else if ((child / 10) % 10 > 0) {
                     parent1 = new ParentData(qtBumble, (short) (child - 10));
-                    parent2 = parent1;
+                    parent2 = new ParentData(qtBumble, (short) (child - 10));
                 } else continue;
 
                 CachedMutationRecipe recipe = new CachedMutationRecipe(

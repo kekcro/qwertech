@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static com.kbi.qwertech.mixins.QwertechMixinPlugin.L;
+import static com.kbi.qwertech.api.data.QTConfigs.L;
 
 public class Config {
     //forge's cfg refuses to dump itself to file at this point, so I'll just use a better format

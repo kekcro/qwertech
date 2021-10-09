@@ -25,3 +25,7 @@
 /MinecraftForge-Credits.txt
 /MinecraftForge-License.txt
 /mod.zip
+*.iml
+*.ipr
+*.iws
+*.xcf

@@ -7,6 +7,7 @@ import codechicken.nei.recipe.ShapelessRecipeHandler;
 import codechicken.nei.recipe.TemplateRecipeHandler;
 import com.kbi.qwertech.QwerTech;
 import com.kbi.qwertech.api.recipe.AnyQTTool;
+import com.kbi.qwertech.tileentities.CraftingTableT1;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import gregapi.code.ICondition;
 import gregapi.data.ANY;
@@ -18,6 +19,7 @@ import gregapi.oredict.OreDictMaterial;
 import gregapi.oredict.OreDictPrefix;
 import gregapi.util.OM;
 import gregapi.util.ST;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -31,7 +33,6 @@ import java.util.*;
 public class NEI_Tool_Handler extends ShapelessRecipeHandler {
 
 	public NEI_Tool_Handler() {
-		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(65, 13, 36, 18), getOverlayIdentifier()));
 	    if (!NEI_QT_Config.sIsAdded)
 	    {
 	      System.out.println("Creating QT NEI handler");
@@ -40,7 +41,12 @@ public class NEI_Tool_Handler extends ShapelessRecipeHandler {
 	      GuiUsageRecipe.usagehandlers.add(this);
 	    }
 	}
-	
+
+	@Override
+	public void loadTransferRects() {
+		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(65, 13, 36, 18), getOverlayIdentifier()));
+	}
+
 	@Override
 	public TemplateRecipeHandler newInstance() {
     	return new NEI_Tool_Handler();

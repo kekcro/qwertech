@@ -110,6 +110,19 @@ dependencies {
 	compileOnly files("SpongeMixins-1.3.2-dev.jar")
 }
 
+processResources {
+	// This will ensure that this task is redone when the versions or any
+	// user-defined properties change.
+	inputs.property "version", version
+	inputs.property "mcversion", project.minecraft.version
+	inputs.properties project.ext.getProperties()
+
+	filesMatching('*.info') {
+		expand 'version': project.version, 'mcversion': project.minecraft.version
+	}
+}
+
+/*
 processResources
 {
     // this will ensure that this task is redone when the versions change.
@@ -131,7 +144,8 @@ processResources
 		exclude 'thumbs.db'
     }
 }
-
+ */
+/*
 def filteredSourceDir = file("${buildDir}/filtered") 
 
 sourceSets {
@@ -169,6 +183,8 @@ sourceSets {
 // tell the compileJava task to compile the filtered source 
 compileJava.source = sourceSets.filtered.java 
 
+
+ */
 task deobfJar(type: Jar, dependsOn: 'jar') {
     from "build/classes/main"
 	from(sourceSets.main.resources.srcDirs) {

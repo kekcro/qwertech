@@ -27,7 +27,6 @@ public class NEI_Wood_Handler extends ShapedRecipeHandler {
 	ShapelessRecipeHandler SRH = new ShapelessRecipeHandler();
 	
 	public NEI_Wood_Handler() {
-		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(65, 13, 36, 18), getOverlayIdentifier()));
 	    if (!NEI_QT_Config.sIsAdded)
 	    {
 	      System.out.println("Creating QT NEI wood handler");
@@ -36,6 +35,13 @@ public class NEI_Wood_Handler extends ShapedRecipeHandler {
 	      GuiUsageRecipe.usagehandlers.add(this);
 	    }
 	}
+
+	/*
+	@Override
+	public void loadTransferRects() {
+		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(65, 13, 36, 18), getOverlayIdentifier()));
+	}
+	 */
 	
 	@Override
 	public TemplateRecipeHandler newInstance() {

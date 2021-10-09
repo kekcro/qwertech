@@ -197,32 +197,14 @@ public class RenderShortcuts {
 
         FluidStack fluid = ((MultiItem)item.getItem()).getFluid(item);
 
-        Minecraft.getMinecraft().renderEngine.bindTexture(ITEM);
         if (fluid != null) {
-                //System.out.println("l");
+            //System.out.println("l");
             int color = fluid.getFluid().getColor();
             GL11.glColor3ub((byte) (color >> 16 & 0xFF), (byte) (color >> 8 & 0xFF), (byte) (color & 0xFF));
             renderMask(item.getItem().getIcon(item, 1), fluid.getFluid().getIcon(), type);
         }
+        Minecraft.getMinecraft().renderEngine.bindTexture(ITEM);
 
-        /*
-        if (!type.equals(ItemRenderType.INVENTORY)) {
-            if (item.getItemDamage() == 1) {
-                RenderHelper.renderItemIn2D(florbs[1]);
-            } else {
-                RenderHelper.renderItemIn2D(florbs[0]);
-            }
-        } else {
-            if (item.getItemDamage() == 1) {
-                RenderHelper.renderIcon(florbs[1], 4);
-            } else {
-                RenderHelper.renderIcon(florbs[0], 4);
-            }
-        }*/
-
-        //for (int i = 0; i < item.getItem().getRenderPasses(item.getItemDamage()); i++)
-        //{
-        //}
         postItemRender();
         GL11.glPopMatrix();
         GL11.glPushMatrix();

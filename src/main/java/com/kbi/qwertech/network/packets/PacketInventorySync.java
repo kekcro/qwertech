@@ -20,11 +20,8 @@ import java.io.IOException;
 import static gregapi.data.CS.ERR;
 
 public class PacketInventorySync implements IPacket {
-	private ItemStack mStack;
-	private int slot;
-	private int xCoord;
-	private int yCoord;
-	private int zCoord;
+	protected ItemStack mStack;
+	protected int slot, xCoord, yCoord, zCoord;
 	
 	public PacketInventorySync() {/**/}
 	

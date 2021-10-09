@@ -12,10 +12,7 @@ import gregtech.items.MultiItemBumbles;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityFlowerPot;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
@@ -67,7 +64,7 @@ public class CustomItemBumbles extends MultiItemBumbles {
         int[] tOrderZ = RNGSUS.nextBoolean() ? aDistance < SCANS_POS.length ? SCANS_POS[aDistance] : SCANS_POS[SCANS_POS.length - 1] : aDistance < SCANS_NEG.length ? SCANS_NEG[aDistance] : SCANS_NEG[SCANS_NEG.length - 1];
         if (matches(aMetaData)) {
             BumbleData data = getData(aMetaData);
-            if (data.flowers.length == 0) {
+            if (data == null || data.flowers == null || data.flowers.length == 0) {
                 if (RNGSUS.nextBoolean()) {
                     for (int j : tOrderY)
                         for (int i : tOrderX)
@@ -125,9 +122,8 @@ public class CustomItemBumbles extends MultiItemBumbles {
         for (String flower : flowers) {
             String[] split = flower.split(":");
             if (split[0].equals("ore")) {
-                List<ItemStack> items = OreDictionary.getOres(split[1]);
-                for (ItemStack item : items) {
-                    blocks.add(Block.getBlockFromItem(item.getItem()));
+                for (ItemStack item : OreDictionary.getOres(split[1])) {
+                    blocks.add(ST.block(item));
                 }
             } else {
                 blocks.add(GameRegistry.findBlock(split[0], split[1]));
@@ -154,39 +150,8 @@ public class CustomItemBumbles extends MultiItemBumbles {
         if (metaA == metaB) return false;
         aMetaDataA = trunc(aMetaDataA);
         aMetaDataB = trunc(aMetaDataB);
-        return (aBumbleBeeA.getItem() == parents[0].item && aMetaDataA == metaA && aBumbleBeeB.getItem() == parents[1].item && aMetaDataB == metaB)
+        return/**/ (aBumbleBeeA.getItem() == parents[0].item && aMetaDataA == metaA && aBumbleBeeB.getItem() == parents[1].item && aMetaDataB == metaB)
                 || (aBumbleBeeB.getItem() == parents[0].item && aMetaDataB == metaA && aBumbleBeeA.getItem() == parents[1].item && aMetaDataA == metaB);
-    }
-
-    private static boolean checkFlowers(World aWorld, int aX, int aY, int aZ) {
-        Block aBlock = WD.block(aWorld, aX, aY, aZ, F);
-        if (aBlock == NB) return F;
-        if (aBlock == Blocks.flower_pot) {
-            TileEntity tTileEntity = WD.te(aWorld, aX, aY, aZ, F);
-            if (tTileEntity instanceof TileEntityFlowerPot) {
-                aBlock = Block.getBlockFromItem(((TileEntityFlowerPot) tTileEntity).getFlowerPotItem());
-                return aBlock == Blocks.yellow_flower || aBlock == Blocks.red_flower;
-            }
-            return F;
-        }
-        if (aBlock == Blocks.double_plant) {
-            byte tMeta = WD.meta(aWorld, aX, aY, aZ);
-            return tMeta != 2 && tMeta != 3;
-        }
-        if (BlocksGT.FLOWERS.contains(aBlock)) {
-            Block tBlock = WD.block(aWorld, aX, aY - 1, aZ);
-            if (aBlock == tBlock || aBlock == WD.block(aWorld, aX, aY + 1, aZ)) return F;
-            int tX = aX + RNGSUS.nextInt(5) - 2, tY = aY + RNGSUS.nextInt(3) - 2, tZ = aZ + RNGSUS.nextInt(5) - 2;
-            if (tBlock == WD.block(aWorld, tX, tY, tZ)) {
-                tBlock = WD.block(aWorld, tX, ++tY, tZ);
-                byte tMeta = WD.meta(aWorld, aX, aY, aZ);
-                if (WD.air(aWorld, tX, tY, tZ, tBlock) || WD.grass(tBlock, tMeta)) {
-                    WD.set(aWorld, tX, tY, tZ, aBlock, tMeta, 3);
-                }
-            }
-            return T;
-        }
-        return F;
     }
 
     public static ItemStack toComb(short meta) {
@@ -269,7 +234,12 @@ public class CustomItemBumbles extends MultiItemBumbles {
 
     @Override
     public int getColorFromItemStack(ItemStack bumble, int renderPass) {
-        if (renderPass == 0) return UT.Code.getRGBInt(CUSTOM_BUMBLE_DATA.get(trunc(ST.meta(bumble))).rgb);
+        if (renderPass == 0) {
+            short aMeta = trunc(ST.meta(bumble));
+            if (CUSTOM_BUMBLE_DATA.containsKey(aMeta)) {
+                return UT.Code.getRGBInt(CUSTOM_BUMBLE_DATA.get(aMeta).rgb);
+            }
+        }
         return 16777215;
     }
 }

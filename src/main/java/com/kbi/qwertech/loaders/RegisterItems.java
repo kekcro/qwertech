@@ -25,12 +25,14 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import gregapi.data.*;
 import gregapi.data.CS.ModIDs;
+import gregapi.fluid.FluidGT;
 import gregapi.item.multiitem.MultiItemRandom;
 import gregapi.item.multiitem.food.FoodStat;
 import gregapi.item.multiitem.food.FoodStatFluid;
 import gregapi.util.CR;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -65,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.kbi.qwertech.loaders.RegisterBumbles.CUSTOM_BUMBLE_DATA;
+import static gregapi.data.CS.NB;
 import static gregapi.data.CS.T;
 
 @InterfaceList(value = {
@@ -121,61 +124,61 @@ public class RegisterItems {
 				addItem(1, "Contaminated Syringe", "Trust me, you don't want to use this");
 				addItem(2, "Salty Syringe", "A bit... crusty, inside");
 				addItem(3, "Sugary Syringe", "A bit... crusty, inside");
-				addItem(4, "Syringe of Water", "Drippity dropper", UT.Fluids.make("water", 100L));
-				addItem(5, "Syringe of Distilled Water", "Purified droppity dripper", UT.Fluids.make("ic2distilledwater", 100L));
+				addItem(4, "Syringe of Water", "Drippity dropper", FL.make("water", 100L));
+				addItem(5, "Syringe of Distilled Water", "Purified droppity dripper", FL.make("ic2distilledwater", 100L));
 
-				addItem(10, "Syringe of Saltwater", "Non-potable", UT.Fluids.make("saltwater", 100L), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("saltwater", 100L), make(10), make(0), T));
-				addItem(11, "Syringe of Salty Water", "Non-potable", UT.Fluids.make("seawater", 100L), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("seawater", 100L), make(11), make(0), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("water", 100L), make(11), make(2), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("ic2distilledwater", 100L), make(11), make(2), T));
+				addItem(10, "Syringe of Saltwater", "Non-potable", FL.make("saltwater", 100L), new FluidContainerRegistry.FluidContainerData(FL.make("saltwater", 100L), make(10), make(0), T));
+				addItem(11, "Syringe of Salty Water", "Non-potable", FL.make("seawater", 100L), new FluidContainerRegistry.FluidContainerData(FL.make("seawater", 100L), make(11), make(0), T), new FluidContainerRegistry.FluidContainerData(FL.make("water", 100L), make(11), make(2), T), new FluidContainerRegistry.FluidContainerData(FL.make("ic2distilledwater", 100L), make(11), make(2), T));
 
-				addItem(20, "Syringe of Apple Juice", "WARNING: Keep away from medical professionals", new FluidContainerData(UT.Fluids.make("binnie.juiceapple", 100L), make(20), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juiceapple", 100L), make(20), make(3), T));
-				addItem(21, "Syringe of Beet Juice", "Not THAT kind of healthy for you", new FluidContainerData(UT.Fluids.make("beetjuice", 100L), make(21), make(0), T), new FluidContainerData(UT.Fluids.make("beetjuice", 100L), make(21), make(3), T));
-				addItem(22, "Syringe of Kiwi Juice", "The fruit, not the bird... ew", new FluidContainerData(UT.Fluids.make("kiwijuice", 100L), make(22), make(0), T), new FluidContainerData(UT.Fluids.make("kiwijuice", 100L), make(22), make(3), T));
-				addItem(23, "Syringe of Melon Juice", "Not to be used for melon enhancement", new FluidContainerData(UT.Fluids.make("melonjuice", 100L), make(23), make(0), T), new FluidContainerData(UT.Fluids.make("melonjuice", 100L), make(23), make(3), T));
-				addItem(24, "Syringe of Plum Juice", "Prune juice isn't a thing", new FluidContainerData(UT.Fluids.make("binnie.juiceplum", 100L), make(24), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juiceplum", 100L), make(24), make(3), T));
-				addItem(25, "Syringe of Blackberry Juice", "They prefer to be called African-Americanberries", new FluidContainerData(UT.Fluids.make("blackberryjuice", 100L), make(25), make(0), T), new FluidContainerData(UT.Fluids.make("blackberryjuice", 100L), make(25), make(3), T));
-				addItem(26, "Syringe of Apricot Juice", "APRICODABRA! ...Nothing happened.", new FluidContainerData(UT.Fluids.make("binnie.juiceapricot", 100L), make(26), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juiceapricot", 100L), make(26), make(3), T));
-				addItem(27, "Syringe of Carrot Juice", "Bunny transfusion", new FluidContainerData(UT.Fluids.make("binnie.juicecarrot", 100L), make(27), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicecarrot", 100L), make(27), make(3), T));
-				addItem(28, "Syringe of Red Grape Juice", "Baby's First Wine", new FluidContainerData(UT.Fluids.make("binnie.juiceredgrape", 100L), make(28), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juiceredgrape", 100L), make(28), make(3), T));
-				addItem(29, "Syringe of Blood*", "(actually Tomato Juice)", new FluidContainerData(UT.Fluids.make("binnie.juicetomato", 100L), make(29), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicetomato", 100L), make(29), make(3), T));
-				addItem(30, "Syringe of Blood*", "(actually Cherry Juice)", new FluidContainerData(UT.Fluids.make("binnie.juicecherry", 100L), make(30), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicecherry", 100L), make(30), make(3), T));
-				addItem(31, "Syringe of Fig Juice", "Figgin' useless", new FluidContainerData(UT.Fluids.make("figjuice", 100L), make(31), make(0), T), new FluidContainerData(UT.Fluids.make("figjuice", 100L), make(31), make(3), T));
-				addItem(32, "Syringe of Pear Juice", "Will not give you a pear shape", new FluidContainerData(UT.Fluids.make("binnie.juicepear", 100L), make(32), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicepear", 100L), make(32), make(3), T));
-				addItem(33, "Syringe of Peach Juice", "The 'ch' is important", new FluidContainerData(UT.Fluids.make("binnie.juicepeach", 100L), make(33), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicepeach", 100L), make(33), make(3), T));
-				addItem(34, "Syringe of Blood*", "(actually Strawberry Juice)", new FluidContainerData(UT.Fluids.make("strawberryjuice", 100L), make(34), make(0), T), new FluidContainerData(UT.Fluids.make("strawberryjuice", 100L), make(34), make(3), T));
-				addItem(35, "Syringe of Pomegranate Juice", "More useful than granite pom-poms", new FluidContainerData(UT.Fluids.make("pomegranatejuice", 100L), make(35), make(0), T), new FluidContainerData(UT.Fluids.make("pomegranatejuice", 100L), make(35), make(3), T));
-				addItem(36, "Syringe of Juice", "No, I don't know, it's just... juice", new FluidContainerData(UT.Fluids.make("juice", 100L), make(36), make(0), T), new FluidContainerData(UT.Fluids.make("juice", 100L), make(36), make(3), T));
-				addItem(37, "Syringe of Lemon Juice", "Concentrated sour", new FluidContainerData(UT.Fluids.make("binnie.juicelemon", 100L), make(37), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicelemon", 100L), make(37), make(3), T));
-				addItem(38, "Syringe of Lime Juice", "It's like lemon juice, but green, because green is cooler", new FluidContainerData(UT.Fluids.make("binnie.juicelime", 100L), make(38), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicelime", 100L), make(38), make(3), T));
-				addItem(39, "Syringe of Papaya Juice", "No, I didn't say pie juice", new FluidContainerData(UT.Fluids.make("papayajuice", 100L), make(39), make(0), T), new FluidContainerData(UT.Fluids.make("papayajuice", 100L), make(39), make(3), T));
-				addItem(40, "Syringe of Currant Juice", "The most up-to-date juice there is", new FluidContainerData(UT.Fluids.make("currantjuice", 100L), make(40), make(0), T), new FluidContainerData(UT.Fluids.make("currantjuice", 100L), make(40), make(3), T));
-				addItem(41, "Syringe of Blueberry Juice", "Be more careful with this than Willy", new FluidContainerData(UT.Fluids.make("blueberryjuice", 100L), make(41), make(0), T), new FluidContainerData(UT.Fluids.make("blueberryjuice", 100L), make(41), make(3), T));
-				addItem(42, "Syringe of Potato Juice", "Yes. Potato juice. Pure potato.", new FluidContainerData(UT.Fluids.make("potatojuice", 100L), make(42), make(0), T), new FluidContainerData(UT.Fluids.make("potatojuice", 100L), make(42), make(3), T));
-				addItem(43, "Syringe of Olive Juice", "Yes, it's a thing", new FluidContainerData(UT.Fluids.make("binnie.juiceolive", 100L), make(43), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juiceolive", 100L), make(43), make(3), T));
-				addItem(44, "Syringe of Blood*", "(actually Cranberry Juice)", new FluidContainerData(UT.Fluids.make("binnie.juicecranberry", 100L), make(44), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicecranberry", 100L), make(44), make(3), T));
-				addItem(45, "Syringe of White Grape Juice", "The good kind", new FluidContainerData(UT.Fluids.make("binnie.juicewhitegrape", 100L), make(45), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicewhitegrape", 100L), make(45), make(3), T));
-				addItem(46, "Syringe of Mango Juice", "Go Juiceman", new FluidContainerData(UT.Fluids.make("mangojuice", 100L), make(46), make(0), T), new FluidContainerData(UT.Fluids.make("mangojuice", 100L), make(46), make(3), T));
-				addItem(47, "Syringe of Banana Juice", "I ain't no hollaback girl", new FluidContainerData(UT.Fluids.make("binnie.juicebanana", 100L), make(47), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicebanana", 100L), make(47), make(3), T));
-				addItem(48, "Syringe of Grapefruit Juice", "NOT to be confused with Grape fruit-juice", new FluidContainerData(UT.Fluids.make("binnie.juicegrapefruit", 100L), make(48), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicegrapefruit", 100L), make(48), make(3), T));
-				addItem(49, "Syringe of Orange Juice", "Actually more of a Yellow Juice", new FluidContainerData(UT.Fluids.make("binnie.juiceorange", 100L), make(49), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juiceorange", 100L), make(49), make(3), T));
-				addItem(50, "Syringe of Persimmon Juice", "1 persimmon per simmon", new FluidContainerData(UT.Fluids.make("persimmonjuice", 100L), make(50), make(0), T), new FluidContainerData(UT.Fluids.make("persimmonjuice", 100L), make(50), make(3), T));
-				addItem(51, "Syringe of Elderberry Juice", "Will not help with age wrinkles", new FluidContainerData(UT.Fluids.make("binnie.juiceelderberry", 100L), make(51), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juiceelderberry", 100L), make(51), make(3), T));
-				addItem(52, "Syringe of Blood*", "(actually Raspberry Juice)", new FluidContainerData(UT.Fluids.make("raspberryjuice", 100L), make(52), make(0), T), new FluidContainerData(UT.Fluids.make("raspberryjuice", 100L), make(52), make(3), T));
-				addItem(53, "Syringe of Pumpkin Juice", "Juice'o'Lantern", new FluidContainerData(UT.Fluids.make("pumpkinjuice", 100L), make(53), make(0), T), new FluidContainerData(UT.Fluids.make("pumpkinjuice", 100L), make(53), make(3), T));
-				addItem(54, "Syringe of Gooseberry Juice", "Has nothing to do with birds", new FluidContainerData(UT.Fluids.make("gooseberryjuice", 100L), make(54), make(0), T), new FluidContainerData(UT.Fluids.make("gooseberryjuice", 100L), make(54), make(3), T));
-				addItem(55, "Syringe of Starfruit Juice", "No, no... star juice is just Hydrogen", new FluidContainerData(UT.Fluids.make("starfruitjuice", 100L), make(55), make(0), T), new FluidContainerData(UT.Fluids.make("starfruitjuice", 100L), make(55), make(3), T));
-				addItem(56, "Syringe of Pineapple Juice", "Or Ananas Juice, if you are so inclined", new FluidContainerData(UT.Fluids.make("binnie.juicepineapple", 100L), make(56), make(0), T), new FluidContainerData(UT.Fluids.make("binnie.juicepineapple", 100L), make(56), make(3), T));
-				addItem(57, "Syringe of Grape Juice", "It's grrrrrrrape", new FluidContainerData(UT.Fluids.make("grapejuice", 100L), make(57), make(0), T), new FluidContainerData(UT.Fluids.make("grapejuice", 100L), make(57), make(3), T));
-				addItem(58, "Syringe of Sugarwater", "100cc of sugar helps the medicine flow down", UT.Fluids.make("sugarwater", 100L), new FluidContainerData(UT.Fluids.make("water", 100L), make(58), make(3), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("sugarwater", 100L), make(58), make(0), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("ic2distilledwater", 100L), make(58), make(3), T));
+				addItem(20, "Syringe of Apple Juice", "WARNING: Keep away from medical professionals", new FluidContainerData(FL.make("binnie.juiceapple", 100L), make(20), make(0), T), new FluidContainerData(FL.make("binnie.juiceapple", 100L), make(20), make(3), T));
+				addItem(21, "Syringe of Beet Juice", "Not THAT kind of healthy for you", new FluidContainerData(FL.make("beetjuice", 100L), make(21), make(0), T), new FluidContainerData(FL.make("beetjuice", 100L), make(21), make(3), T));
+				addItem(22, "Syringe of Kiwi Juice", "The fruit, not the bird... ew", new FluidContainerData(FL.make("kiwijuice", 100L), make(22), make(0), T), new FluidContainerData(FL.make("kiwijuice", 100L), make(22), make(3), T));
+				addItem(23, "Syringe of Melon Juice", "Not to be used for melon enhancement", new FluidContainerData(FL.make("melonjuice", 100L), make(23), make(0), T), new FluidContainerData(FL.make("melonjuice", 100L), make(23), make(3), T));
+				addItem(24, "Syringe of Plum Juice", "Prune juice isn't a thing", new FluidContainerData(FL.make("binnie.juiceplum", 100L), make(24), make(0), T), new FluidContainerData(FL.make("binnie.juiceplum", 100L), make(24), make(3), T));
+				addItem(25, "Syringe of Blackberry Juice", "They prefer to be called African-Americanberries", new FluidContainerData(FL.make("blackberryjuice", 100L), make(25), make(0), T), new FluidContainerData(FL.make("blackberryjuice", 100L), make(25), make(3), T));
+				addItem(26, "Syringe of Apricot Juice", "APRICODABRA! ...Nothing happened.", new FluidContainerData(FL.make("binnie.juiceapricot", 100L), make(26), make(0), T), new FluidContainerData(FL.make("binnie.juiceapricot", 100L), make(26), make(3), T));
+				addItem(27, "Syringe of Carrot Juice", "Bunny transfusion", new FluidContainerData(FL.make("binnie.juicecarrot", 100L), make(27), make(0), T), new FluidContainerData(FL.make("binnie.juicecarrot", 100L), make(27), make(3), T));
+				addItem(28, "Syringe of Red Grape Juice", "Baby's First Wine", new FluidContainerData(FL.make("binnie.juiceredgrape", 100L), make(28), make(0), T), new FluidContainerData(FL.make("binnie.juiceredgrape", 100L), make(28), make(3), T));
+				addItem(29, "Syringe of Blood*", "(actually Tomato Juice)", new FluidContainerData(FL.make("binnie.juicetomato", 100L), make(29), make(0), T), new FluidContainerData(FL.make("binnie.juicetomato", 100L), make(29), make(3), T));
+				addItem(30, "Syringe of Blood*", "(actually Cherry Juice)", new FluidContainerData(FL.make("binnie.juicecherry", 100L), make(30), make(0), T), new FluidContainerData(FL.make("binnie.juicecherry", 100L), make(30), make(3), T));
+				addItem(31, "Syringe of Fig Juice", "Figgin' useless", new FluidContainerData(FL.make("figjuice", 100L), make(31), make(0), T), new FluidContainerData(FL.make("figjuice", 100L), make(31), make(3), T));
+				addItem(32, "Syringe of Pear Juice", "Will not give you a pear shape", new FluidContainerData(FL.make("binnie.juicepear", 100L), make(32), make(0), T), new FluidContainerData(FL.make("binnie.juicepear", 100L), make(32), make(3), T));
+				addItem(33, "Syringe of Peach Juice", "The 'ch' is important", new FluidContainerData(FL.make("binnie.juicepeach", 100L), make(33), make(0), T), new FluidContainerData(FL.make("binnie.juicepeach", 100L), make(33), make(3), T));
+				addItem(34, "Syringe of Blood*", "(actually Strawberry Juice)", new FluidContainerData(FL.make("strawberryjuice", 100L), make(34), make(0), T), new FluidContainerData(FL.make("strawberryjuice", 100L), make(34), make(3), T));
+				addItem(35, "Syringe of Pomegranate Juice", "More useful than granite pom-poms", new FluidContainerData(FL.make("pomegranatejuice", 100L), make(35), make(0), T), new FluidContainerData(FL.make("pomegranatejuice", 100L), make(35), make(3), T));
+				addItem(36, "Syringe of Juice", "No, I don't know, it's just... juice", new FluidContainerData(FL.make("juice", 100L), make(36), make(0), T), new FluidContainerData(FL.make("juice", 100L), make(36), make(3), T));
+				addItem(37, "Syringe of Lemon Juice", "Concentrated sour", new FluidContainerData(FL.make("binnie.juicelemon", 100L), make(37), make(0), T), new FluidContainerData(FL.make("binnie.juicelemon", 100L), make(37), make(3), T));
+				addItem(38, "Syringe of Lime Juice", "It's like lemon juice, but green, because green is cooler", new FluidContainerData(FL.make("binnie.juicelime", 100L), make(38), make(0), T), new FluidContainerData(FL.make("binnie.juicelime", 100L), make(38), make(3), T));
+				addItem(39, "Syringe of Papaya Juice", "No, I didn't say pie juice", new FluidContainerData(FL.make("papayajuice", 100L), make(39), make(0), T), new FluidContainerData(FL.make("papayajuice", 100L), make(39), make(3), T));
+				addItem(40, "Syringe of Currant Juice", "The most up-to-date juice there is", new FluidContainerData(FL.make("currantjuice", 100L), make(40), make(0), T), new FluidContainerData(FL.make("currantjuice", 100L), make(40), make(3), T));
+				addItem(41, "Syringe of Blueberry Juice", "Be more careful with this than Willy", new FluidContainerData(FL.make("blueberryjuice", 100L), make(41), make(0), T), new FluidContainerData(FL.make("blueberryjuice", 100L), make(41), make(3), T));
+				addItem(42, "Syringe of Potato Juice", "Yes. Potato juice. Pure potato.", new FluidContainerData(FL.make("potatojuice", 100L), make(42), make(0), T), new FluidContainerData(FL.make("potatojuice", 100L), make(42), make(3), T));
+				addItem(43, "Syringe of Olive Juice", "Yes, it's a thing", new FluidContainerData(FL.make("binnie.juiceolive", 100L), make(43), make(0), T), new FluidContainerData(FL.make("binnie.juiceolive", 100L), make(43), make(3), T));
+				addItem(44, "Syringe of Blood*", "(actually Cranberry Juice)", new FluidContainerData(FL.make("binnie.juicecranberry", 100L), make(44), make(0), T), new FluidContainerData(FL.make("binnie.juicecranberry", 100L), make(44), make(3), T));
+				addItem(45, "Syringe of White Grape Juice", "The good kind", new FluidContainerData(FL.make("binnie.juicewhitegrape", 100L), make(45), make(0), T), new FluidContainerData(FL.make("binnie.juicewhitegrape", 100L), make(45), make(3), T));
+				addItem(46, "Syringe of Mango Juice", "Go Juiceman", new FluidContainerData(FL.make("mangojuice", 100L), make(46), make(0), T), new FluidContainerData(FL.make("mangojuice", 100L), make(46), make(3), T));
+				addItem(47, "Syringe of Banana Juice", "I ain't no hollaback girl", new FluidContainerData(FL.make("binnie.juicebanana", 100L), make(47), make(0), T), new FluidContainerData(FL.make("binnie.juicebanana", 100L), make(47), make(3), T));
+				addItem(48, "Syringe of Grapefruit Juice", "NOT to be confused with Grape fruit-juice", new FluidContainerData(FL.make("binnie.juicegrapefruit", 100L), make(48), make(0), T), new FluidContainerData(FL.make("binnie.juicegrapefruit", 100L), make(48), make(3), T));
+				addItem(49, "Syringe of Orange Juice", "Actually more of a Yellow Juice", new FluidContainerData(FL.make("binnie.juiceorange", 100L), make(49), make(0), T), new FluidContainerData(FL.make("binnie.juiceorange", 100L), make(49), make(3), T));
+				addItem(50, "Syringe of Persimmon Juice", "1 persimmon per simmon", new FluidContainerData(FL.make("persimmonjuice", 100L), make(50), make(0), T), new FluidContainerData(FL.make("persimmonjuice", 100L), make(50), make(3), T));
+				addItem(51, "Syringe of Elderberry Juice", "Will not help with age wrinkles", new FluidContainerData(FL.make("binnie.juiceelderberry", 100L), make(51), make(0), T), new FluidContainerData(FL.make("binnie.juiceelderberry", 100L), make(51), make(3), T));
+				addItem(52, "Syringe of Blood*", "(actually Raspberry Juice)", new FluidContainerData(FL.make("raspberryjuice", 100L), make(52), make(0), T), new FluidContainerData(FL.make("raspberryjuice", 100L), make(52), make(3), T));
+				addItem(53, "Syringe of Pumpkin Juice", "Juice'o'Lantern", new FluidContainerData(FL.make("pumpkinjuice", 100L), make(53), make(0), T), new FluidContainerData(FL.make("pumpkinjuice", 100L), make(53), make(3), T));
+				addItem(54, "Syringe of Gooseberry Juice", "Has nothing to do with birds", new FluidContainerData(FL.make("gooseberryjuice", 100L), make(54), make(0), T), new FluidContainerData(FL.make("gooseberryjuice", 100L), make(54), make(3), T));
+				addItem(55, "Syringe of Starfruit Juice", "No, no... star juice is just Hydrogen", new FluidContainerData(FL.make("starfruitjuice", 100L), make(55), make(0), T), new FluidContainerData(FL.make("starfruitjuice", 100L), make(55), make(3), T));
+				addItem(56, "Syringe of Pineapple Juice", "Or Ananas Juice, if you are so inclined", new FluidContainerData(FL.make("binnie.juicepineapple", 100L), make(56), make(0), T), new FluidContainerData(FL.make("binnie.juicepineapple", 100L), make(56), make(3), T));
+				addItem(57, "Syringe of Grape Juice", "It's grrrrrrrape", new FluidContainerData(FL.make("grapejuice", 100L), make(57), make(0), T), new FluidContainerData(FL.make("grapejuice", 100L), make(57), make(3), T));
+				addItem(58, "Syringe of Sugarwater", "100cc of sugar helps the medicine flow down", FL.make("sugarwater", 100L), new FluidContainerData(FL.make("water", 100L), make(58), make(3), T), new FluidContainerRegistry.FluidContainerData(FL.make("sugarwater", 100L), make(58), make(0), T), new FluidContainerRegistry.FluidContainerData(FL.make("ic2distilledwater", 100L), make(58), make(3), T));
 
-				addItem(100, "Syringe of Dirty Water", "Needs to be flushed a few times", new FluidContainerData(UT.Fluids.make("waterdirty", 100L), make(100), make(1), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("water", 100L), make(100), make(1), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("waterdirty", 100L), make(100), make(0), T), new FluidContainerRegistry.FluidContainerData(UT.Fluids.make("ic2distilledwater", 100L), make(100), make(1), T));
-				addItem(101, "Syringe of Milk", "Not for infant injection", UT.Fluids.make("milk", 100L), new FluidContainerData(UT.Fluids.make("milk", 100L), make(101), make(0), T));
-				addItem(102, "Syringe of Blood", "", UT.Fluids.make("blood", 100L), new FluidContainerData(UT.Fluids.make("blood", 100L), make(102), make(0), T));
-				addItem(103, "Syringe of DNA", "", UT.Fluids.make("dna", 100L), new FluidContainerData(UT.Fluids.make("dna", 100L), make(103), make(0), T));
-				addItem(104, "Syringe of Soymilk", "Not actually milk", UT.Fluids.make("soymilk", 100L), new FluidContainerData(UT.Fluids.make("soymilk", 100L), make(104), make(0), T));
-				addItem(105, "Syringe of Blaze", "IT BURNS!", UT.Fluids.make("blaze", 100L), new FluidContainerData(UT.Fluids.make("blaze", 100L), make(105), make(0), T));
-				addItem(106, "Syringe of Mushroom Soup", "Delicious", UT.Fluids.make("mushroomsoup", 100L), new FluidContainerData(UT.Fluids.make("mushroomsoup", 100L), make(106), make(0), T));
-				addItem(107, "Syringe of Ice Water", "You said " + LH.Chat.ITALIC + "hypothermic" + LH.Chat.RESET + " needle, right?", UT.Fluids.make("ice", 100L), new FluidContainerData(UT.Fluids.make("ice", 100L), make(107), make(0), T));
-				addItem(108, "Syringe of Slime", "It's squirming around in there...", UT.Fluids.make("slime", 100L), new FluidContainerData(UT.Fluids.make("slime", 100L), make(108), make(0), T));
+				addItem(100, "Syringe of Dirty Water", "Needs to be flushed a few times", new FluidContainerData(FL.make("waterdirty", 100L), make(100), make(1), T), new FluidContainerRegistry.FluidContainerData(FL.make("water", 100L), make(100), make(1), T), new FluidContainerRegistry.FluidContainerData(FL.make("waterdirty", 100L), make(100), make(0), T), new FluidContainerRegistry.FluidContainerData(FL.make("ic2distilledwater", 100L), make(100), make(1), T));
+				addItem(101, "Syringe of Milk", "Not for infant injection", FL.make("milk", 100L), new FluidContainerData(FL.make("milk", 100L), make(101), make(0), T));
+				addItem(102, "Syringe of Blood", "", FL.make("blood", 100L), new FluidContainerData(FL.make("blood", 100L), make(102), make(0), T));
+				addItem(103, "Syringe of DNA", "", FL.make("dna", 100L), new FluidContainerData(FL.make("dna", 100L), make(103), make(0), T));
+				addItem(104, "Syringe of Soymilk", "Not actually milk", FL.make("soymilk", 100L), new FluidContainerData(FL.make("soymilk", 100L), make(104), make(0), T));
+				addItem(105, "Syringe of Blaze", "IT BURNS!", FL.make("blaze", 100L), new FluidContainerData(FL.make("blaze", 100L), make(105), make(0), T));
+				addItem(106, "Syringe of Mushroom Soup", "Delicious", FL.make("mushroomsoup", 100L), new FluidContainerData(FL.make("mushroomsoup", 100L), make(106), make(0), T));
+				addItem(107, "Syringe of Ice Water", "You said " + LH.Chat.ITALIC + "hypothermic" + LH.Chat.RESET + " needle, right?", FL.make("ice", 100L), new FluidContainerData(FL.make("ice", 100L), make(107), make(0), T));
+				addItem(108, "Syringe of Slime", "It's squirming around in there...", FL.make("slime", 100L), new FluidContainerData(FL.make("slime", 100L), make(108), make(0), T));
 
 				CR.shaped(make(2, 0), new Object[]{"ABA", " C ", " D ", 'A', OP.round.dat(MT.Plastic).toString(), 'B', OP.stick.dat(MT.Plastic).toString(), 'C', OP.pipeTiny.dat(MT.Plastic).toString(), 'D', OP.bolt.dat(ANY.Steel).toString()});
 			}
@@ -191,21 +194,21 @@ public class RegisterItems {
 				switch (dam) {
 					/*case 1:
 					case 3:
-						if (aFluid.isFluidEqual(UT.Fluids.make("water", 1))) {
+						if (aFluid.isFluidEqual(FL.make("water", 1))) {
 							if (doFill) aStack.setItemDamage(0);
-							return fill(doFill ? aStack : make(0), UT.Fluids.make("waterdirty", aFluid.amount), doFill);
+							return fill(doFill ? aStack : make(0), FL.make("waterdirty", aFluid.amount), doFill);
 						}
 						break;
 					case 2:
-						if (aFluid.isFluidEqual(UT.Fluids.make("water", 1))) {
+						if (aFluid.isFluidEqual(FL.make("water", 1))) {
 							if (doFill) aStack.setItemDamage(0);
-							return fill(doFill ? aStack : make(0), UT.Fluids.make("saltwater", aFluid.amount), doFill);
+							return fill(doFill ? aStack : make(0), FL.make("saltwater", aFluid.amount), doFill);
 						}
 						break;*/
 					case 1:
 					case 2:
 					case 3:
-						if (aFluid.isFluidEqual(UT.Fluids.make("dna", 1)) || aFluid.isFluidEqual(UT.Fluids.make("blood", 1))) {
+						if (aFluid.isFluidEqual(FL.make("dna", 1)) || aFluid.isFluidEqual(FL.make("blood", 1))) {
 							NBTTagCompound taggy = UT.NBT.getOrCreate(aStack);
 							taggy.setBoolean("contaminated", true);
 							aStack.setTagCompound(taggy);
@@ -242,6 +245,17 @@ public class RegisterItems {
 						return this.make(0);
 				}
 				return null;
+			}
+
+			@Override
+			public int getColorFromItemStack(ItemStack stack, int renderpass) {
+				if (renderpass > 0) {
+					Fluid aFluid = this.getFluid(stack).getFluid();
+					if (aFluid == null) return 16777215;
+					Block tBlock = aFluid.getBlock();
+					return tBlock != null && tBlock != NB ? tBlock.getRenderColor(0) : aFluid.getColor();
+				}
+				return super.getColorFromItemStack(stack, renderpass);
 			}
 
 			Object emptySyringe = null;
@@ -317,7 +331,7 @@ public class RegisterItems {
 						aPlayer.setCurrentItemOrArmor(0, aUse);
 						return false;
 					}
-					aStack = UT.Fluids.fillFluidContainer(UT.Fluids.make(bloody, 100), aStack, true, true);
+					aStack = FL.fill(FL.make(bloody, 100), aStack, true, true);
 					NBTTagCompound nbt = UT.NBT.getOrCreate(aStack);
 					aEntity.writeToNBT(nbt);
 					System.out.println(nbt.toString());
@@ -334,7 +348,7 @@ public class RegisterItems {
 						aPlayer.setCurrentItemOrArmor(0, aUse);
 						return false;
 					}
-					aStack = UT.Fluids.fillFluidContainer(UT.Fluids.make(bloody, 100), aStack, true, true);
+					aStack = FL.fill(FL.make(bloody, 100), aStack, true, true);
 					NBTTagCompound nbt = UT.NBT.getOrCreate(aStack);
 					aEntity.writeToNBT(nbt);
 					nbt.setString("Class", aEntity.getClass().getName());
@@ -427,10 +441,10 @@ public class RegisterItems {
 				addItem(43, "Junglefowl Egg", "", "listAllegg");
 				addItem(44, "Sulphuric Feather", "Smells Rotten", "itemFeather", "feather", "craftingFeather");
 
-				addItem(1000, "Tomato Sauce", "", UT.Fluids.make("tomatosauce", 250L), FoodStatFluid.INSTANCE);
-				addItem(1001, "Salsa", "Mild", UT.Fluids.make("mildsalsa", 250L), FoodStatFluid.INSTANCE);
-				addItem(1002, "Salsa", "Medium", UT.Fluids.make("salsa", 250L), FoodStatFluid.INSTANCE);
-				addItem(1003, "Salsa", "Magmatic", UT.Fluids.make("hotsalsa", 250L), FoodStatFluid.INSTANCE);
+				addItem(1000, "Tomato Sauce", "", FL.make("tomatosauce", 250L), FoodStatFluid.INSTANCE);
+				addItem(1001, "Salsa", "Mild", FL.make("mildsalsa", 250L), FoodStatFluid.INSTANCE);
+				addItem(1002, "Salsa", "Medium", FL.make("salsa", 250L), FoodStatFluid.INSTANCE);
+				addItem(1003, "Salsa", "Magmatic", FL.make("hotsalsa", 250L), FoodStatFluid.INSTANCE);
 
 				QTI.mozzarella.set(ST.make(this, 1, 0));
 				QTI.parmesanRaw.set(ST.make(this, 1, 1));
@@ -499,10 +513,10 @@ public class RegisterItems {
 				//mix cheese chunks to make mozzarella
 				RM.Mixer.addRecipe2(true, 16L, 16L, OP.chunkGt.mat(MT.Cheese, 2), OP.chunkGt.mat(MT.Cheese, 2), QTI.mozzarella.get(1));
 				//mix cheese powder and milk to make raw parmesan
-				RM.Mixer.addRecipe1(true, 16L, 32L, OP.dustSmall.mat(MT.Cheese, 3), UT.Fluids.make("milk", 1000), null, QTI.parmesanRaw.get(1));
+				RM.Mixer.addRecipe1(true, 16L, 32L, OP.dustSmall.mat(MT.Cheese, 3), FL.make("milk", 1000), null, QTI.parmesanRaw.get(1));
 				//mix raw parmesan and saltwater to make parmesan
-				RM.Bath.addRecipe1(true, 0L, 256L, QTI.parmesanRaw.get(1), UT.Fluids.make("saltwater", 1000), UT.Fluids.make("water", 1000), QTI.parmesan.get(1));
-				RM.Bath.addRecipe1(true, 0L, 256L, QTI.parmesanRaw.get(1), UT.Fluids.make("seawater", 1000), UT.Fluids.make("water", 1000), QTI.parmesan.get(1));
+				RM.Bath.addRecipe1(true, 0L, 256L, QTI.parmesanRaw.get(1), FL.make("saltwater", 1000), FL.make("water", 1000), QTI.parmesan.get(1));
+				RM.Bath.addRecipe1(true, 0L, 256L, QTI.parmesanRaw.get(1), FL.make("seawater", 1000), FL.make("water", 1000), QTI.parmesan.get(1));
 				RM.Mortar.addRecipe1(true, 16L, 16L, QTI.parmesan.get(1), QTI.parmesanGrated.get(1));
 
 				//replace "dough with ketchup" with "dough with sauce", and cheese slice pizza with mozzarella pizza
@@ -531,12 +545,12 @@ public class RegisterItems {
 				CR.shapeless(QTI.junglefowlLegCooked.get(2), CR.DEF, new Object[]{QTI.junglefowlWholeCooked, "craftingToolKnife"});
 
 				//fry chicken
-				RM.Bath.addRecipe1(true, 0L, 16L, QTI.chickenLegRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.chickenLegFried.get(1));
-				RM.Bath.addRecipe1(true, 0L, 16L, QTI.chickenWingRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.chickenWingFried.get(1));
-				RM.Bath.addRecipe1(true, 0L, 16L, QTI.turkeyLegRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.turkeyLegFried.get(1));
-				RM.Bath.addRecipe1(true, 0L, 16L, QTI.turkeyWingRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.turkeyWingFried.get(1));
-				RM.Bath.addRecipe1(true, 0L, 16L, QTI.junglefowlLegRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.junglefowlLegFried.get(1));
-				RM.Bath.addRecipe1(true, 0L, 16L, QTI.junglefowlWingRaw.get(1), UT.Fluids.make("hotfryingoil", 10), null, QTI.junglefowlLegFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.chickenLegRaw.get(1), FL.make("hotfryingoil", 10), null, QTI.chickenLegFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.chickenWingRaw.get(1), FL.make("hotfryingoil", 10), null, QTI.chickenWingFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.turkeyLegRaw.get(1), FL.make("hotfryingoil", 10), null, QTI.turkeyLegFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.turkeyWingRaw.get(1), FL.make("hotfryingoil", 10), null, QTI.turkeyWingFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.junglefowlLegRaw.get(1), FL.make("hotfryingoil", 10), null, QTI.junglefowlLegFried.get(1));
+				RM.Bath.addRecipe1(true, 0L, 16L, QTI.junglefowlWingRaw.get(1), FL.make("hotfryingoil", 10), null, QTI.junglefowlLegFried.get(1));
 
 				//sulphur feather
 				RM.Mortar.addRecipe1(true, 0L, 16L, make(44), OP.dustSmall.mat(MT.Gunpowder, 1));
@@ -829,35 +843,35 @@ public class RegisterItems {
 			public void addItems() {
 				addItem(0, "Bucket of Chemical X", LH.Chat.RED + "Unstable", QTMT.ChemicalX.liquid(CS.U, true));
 				addItem(1, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(2, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(2, "Bucket of Sugarwater", "", FL.make("sugarwater", 1000));
 
 				addItem(4001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(4002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(4002, "Bucket of Sugarwater", "", FL.make("sugarwater", 1000));
 
 				addItem(5001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(5002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(5002, "Bucket of Sugarwater", "", FL.make("sugarwater", 1000));
 
 				addItem(6001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(6002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(6002, "Bucket of Sugarwater", "", FL.make("sugarwater", 1000));
 
 				addItem(7001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(7002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(7002, "Bucket of Sugarwater", "", FL.make("sugarwater", 1000));
 
 				addItem(8001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(8002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(8002, "Bucket of Sugarwater", "", FL.make("sugarwater", 1000));
 
 				addItem(9001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(9002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(9002, "Bucket of Sugarwater", "", FL.make("sugarwater", 1000));
 
 				addItem(10001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(10002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(10002, "Bucket of Sugarwater", "", FL.make("sugarwater", 1000));
 
 				addItem(11001, "Bucket of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(11002, "Bucket of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(11002, "Bucket of Sugarwater", "", FL.make("sugarwater", 1000));
 
 				addItem(12000, "Bottle of Chemical X", LH.Chat.CYAN + "Volatile", QTMT.ChemicalX.liquid(CS.U, true));
 				addItem(12001, "Bottle of Chemical Y", "", QTMT.ChemicalY.liquid(CS.U, true));
-				addItem(12002, "Bottle of Sugarwater", "", UT.Fluids.make("sugarwater", 1000));
+				addItem(12002, "Bottle of Sugarwater", "", FL.make("sugarwater", 1000));
 			}
 
 			@Override
@@ -889,7 +903,10 @@ public class RegisterItems {
 			@Override
 			public int getColorFromItemStack(ItemStack stack, int renderpass) {
 				if (renderpass > 0) {
-					return this.getFluid(stack).getFluid().getColor();
+					Fluid aFluid = this.getFluid(stack).getFluid();
+					if (aFluid == null) return 16777215;
+					Block tBlock = aFluid.getBlock();
+					return tBlock != null && tBlock != NB ? tBlock.getRenderColor(0) : aFluid.getColor();
 				}
 				return super.getColorFromItemStack(stack, renderpass);
 			}

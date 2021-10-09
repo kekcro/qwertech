@@ -11,6 +11,9 @@ import com.kbi.qwertech.api.recipe.HammerablePrefixRecipe;
 import com.kbi.qwertech.api.recipe.HammerableShapedRecipe;
 import com.kbi.qwertech.api.recipe.QTArmor;
 import com.kbi.qwertech.api.recipe.managers.CraftingManagerHammer;
+import com.kbi.qwertech.client.gui.GuiQTCraftingTableClient;
+import com.kbi.qwertech.tileentities.CraftingTableT1;
+import com.kbi.qwertech.tileentities.CraftingTableT2;
 import cpw.mods.fml.common.event.FMLInterModComms;
 import gregapi.code.ICondition;
 import gregapi.data.MT;
@@ -20,6 +23,7 @@ import gregapi.oredict.OreDictPrefix;
 import gregapi.util.OM;
 import gregapi.util.ST;
 import gregapi.util.UT;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,6 +31,7 @@ import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,7 +42,6 @@ public class NEI_Hammer_Handler extends ShapedRecipeHandler {
 	ShapelessRecipeHandler SRH = new ShapelessRecipeHandler();
 	
 	public NEI_Hammer_Handler() {
-		//this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(65, 13, 36, 18), getOverlayIdentifier(), new Object[0]));
 	    if (!NEI_QT_Config.sIsAdded)
 	    {
 	      System.out.println("Creating QT NEI hammer handler");
@@ -46,7 +50,18 @@ public class NEI_Hammer_Handler extends ShapedRecipeHandler {
 	      GuiUsageRecipe.usagehandlers.add(this);
 	    }
 	}
-	
+
+	/*
+	@Override
+	public void loadTransferRects() {
+		this.transferRects.add(new TemplateRecipeHandler.RecipeTransferRect(new Rectangle(65, 13, 36, 18), getOverlayIdentifier()));
+	}
+
+	@Override
+	public Class<? extends GuiContainer> getGuiClass() {
+		return GuiQTCraftingTableClient.class;
+	}
+	*/
 	@Override
 	public TemplateRecipeHandler newInstance() {
     	return new NEI_Hammer_Handler();

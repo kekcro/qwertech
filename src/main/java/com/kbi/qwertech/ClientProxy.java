@@ -5,6 +5,7 @@ import com.kbi.qwertech.api.client.registry.DefaultAnimations;
 import com.kbi.qwertech.api.data.FOOD;
 import com.kbi.qwertech.api.data.QTConfigs;
 import com.kbi.qwertech.api.data.QTI;
+import com.kbi.qwertech.api.data.QTTextures;
 import com.kbi.qwertech.api.entities.IGeneticMob;
 import com.kbi.qwertech.api.entities.Species;
 import com.kbi.qwertech.api.recipe.CountertopRecipe;
@@ -57,6 +58,7 @@ public final class ClientProxy extends CommonProxy { // NO_UCD (unused code)
 	@Override
 	public void onProxyBeforePreInit(Abstract_Mod aMod, FMLPreInitializationEvent aEvent) {
 		new DefaultAnimations();
+		String s = QTTextures.ctDir;
 	}
 
 	@Override
@@ -80,20 +82,14 @@ public final class ClientProxy extends CommonProxy { // NO_UCD (unused code)
 		}
 		if (QTConfigs.add3DPrefixes)
 		{
-			Iterator<ItemStackContainer> ingot = OP.ingot.mRegisteredItems.iterator();
-			while (ingot.hasNext())
-			{
-				MinecraftForgeClient.registerItemRenderer(ingot.next().mItem, itemRenderer);
+			for (ItemStackContainer itemStackContainer : OP.ingot.mRegisteredItems) {
+				MinecraftForgeClient.registerItemRenderer(itemStackContainer.mItem, itemRenderer);
 			}
-			Iterator<ItemStackContainer> stick = OP.stick.mRegisteredItems.iterator();
-			while (stick.hasNext())
-			{
-				MinecraftForgeClient.registerItemRenderer(stick.next().mItem, itemRenderer);
+			for (ItemStackContainer itemStackContainer : OP.stick.mRegisteredItems) {
+				MinecraftForgeClient.registerItemRenderer(itemStackContainer.mItem, itemRenderer);
 			}
-			Iterator<ItemStackContainer> gear = OP.gear.mRegisteredItems.iterator();
-			while (gear.hasNext())
-			{
-				MinecraftForgeClient.registerItemRenderer(gear.next().mItem, itemRenderer);
+			for (ItemStackContainer itemStackContainer : OP.gear.mRegisteredItems) {
+				MinecraftForgeClient.registerItemRenderer(itemStackContainer.mItem, itemRenderer);
 			}
 			/*Iterator<ItemStackContainer> stickLong = OP.stickLong.mRegisteredItems.iterator();
 			while (stickLong.hasNext())

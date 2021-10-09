@@ -2,6 +2,7 @@ package com.kbi.qwertech;
 
 import com.kbi.qwertech.api.data.QTConfigs;
 import com.kbi.qwertech.api.data.QTI;
+import com.kbi.qwertech.api.data.QTMT;
 import com.kbi.qwertech.loaders.RegisterArmor;
 import com.kbi.qwertech.loaders.RegisterBumbles;
 import com.kbi.qwertech.loaders.RegisterMobs;
@@ -19,6 +20,7 @@ import gregapi.oredict.OreDictPrefix;
 import gregapi.util.UT;
 import gregapi.util.WD;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -420,20 +422,24 @@ public class CommonProxy extends Abstract_Proxy {
     }
     
     @SubscribeEvent
-    public void onPlayerWorldInteraction(PlayerInteractEvent event)
-    {
-    	QwerTech.achievementHandler.onRightClick(event);
-    	if (QTConfigs.enableArmor) RegisterArmor.instance.onClickedWearingArmor(event);
-        if (event.entityPlayer.getHeldItem() != CS.NI && event.entityPlayer.getHeldItem().getItem() instanceof IItemBumbleBee) {
-          if (IItemBumbleBee.Util.getBumbleTag(event.entityPlayer.getHeldItem()).hasNoTags()) {
-            EntityPlayer player = event.entityPlayer;
+    public void onPlayerWorldInteraction(PlayerInteractEvent event) {
+      QwerTech.achievementHandler.onRightClick(event);
+      if (QTConfigs.enableArmor) RegisterArmor.instance.onClickedWearingArmor(event);
+      if (!event.world.isRemote) {
+
+        if (event.entityPlayer.getHeldItem() != CS.NI) {
+          EntityPlayer player = event.entityPlayer;
+          if (player.getHeldItem().getItem() instanceof IItemBumbleBee && IItemBumbleBee.Util.getBumbleTag(event.entityPlayer.getHeldItem()).hasNoTags()) {
             World world = player.worldObj;
             BiomeGenBase biome = world.getBiomeGenForCoords((int) player.posX, (int) player.posZ);
             long temp = WD.envTemp(biome);
             NBTTagCompound genes = IItemBumbleBee.Util.getBumbleGenes(temp, biome, T, CS.RNGSUS);
             IItemBumbleBee.Util.setBumbleTag(event.entityPlayer.getHeldItem(), genes);
+          } else if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK && QTMT.Compost.contains(player.getHeldItem()) && OP.dust.contains(player.getHeldItem())) {
+            event.setCanceled(ItemDye.applyBonemeal(player.getHeldItem(), event.world, event.x, event.y, event.z, player));
           }
         }
+      }
     }
     
     //@SubscribeEvent

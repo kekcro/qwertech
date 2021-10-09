@@ -12,8 +12,9 @@ import ru.timeconqueror.spongemixins.MinecraftURLClassPath;
 import java.io.File;
 import java.util.*;
 
+import static com.kbi.qwertech.api.data.QTConfigs.L;
+
 public class QwertechMixinPlugin implements IMixinConfigPlugin {
-    public static final Logger L = LogManager.getLogger("QwerTech");
 
     @Override
     public void onLoad(String s) {

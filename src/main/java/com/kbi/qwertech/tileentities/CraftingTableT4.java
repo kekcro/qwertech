@@ -229,21 +229,10 @@ public class CraftingTableT4 extends CraftingTableT3 {
 		if (aHoldStack == null) aHoldStack = ST.copy(slot(27)); else aHoldStack.stackSize += slot(27).stackSize;
 		
 		aHoldStack.onCrafting(worldObj, aPlayer, slot(27).stackSize);
-		
-		if (aHoldStack.getItem() == Item.getItemFromBlock(Blocks.crafting_table)) aPlayer.addStat(AchievementList.buildWorkBench, 1);
-		if (aHoldStack.getItem() == Item.getItemFromBlock(Blocks.furnace)) aPlayer.addStat(AchievementList.buildFurnace, 1);
-		if (aHoldStack.getItem() == Item.getItemFromBlock(Blocks.enchanting_table)) aPlayer.addStat(AchievementList.enchantments, 1);
-		if (aHoldStack.getItem() == Item.getItemFromBlock(Blocks.bookshelf)) aPlayer.addStat(AchievementList.bookcase, 1);
-		if (aHoldStack.getItem() == Items.bread) aPlayer.addStat(AchievementList.makeBread, 1);
-		if (aHoldStack.getItem() == Items.cake) aPlayer.addStat(AchievementList.bakeCake, 1);
-		if (aHoldStack.getItem() instanceof ItemHoe) aPlayer.addStat(AchievementList.buildHoe, 1);
-		if (aHoldStack.getItem() instanceof ItemSword) aPlayer.addStat(AchievementList.buildSword, 1);
-		if (aHoldStack.getItem() instanceof ItemPickaxe) {
-			aPlayer.addStat(AchievementList.buildPickaxe, 1);
-			if (aHoldStack.getItem() != Items.wooden_pickaxe) aPlayer.addStat(AchievementList.buildBetterPickaxe, 1);
-		}
-		
-		MultiItemTool.LAST_TOOL_COORDS_BEFORE_DAMAGE = null;
+
+        CraftingTableT1.handleAchievements(aPlayer, aHoldStack);
+
+        MultiItemTool.LAST_TOOL_COORDS_BEFORE_DAMAGE = null;
 		
 		TOOL_SOUNDS = tOldToolSounds;
 		
@@ -298,20 +287,9 @@ public class CraftingTableT4 extends CraftingTableT3 {
 		if (aPlayer != null)
 		{
 			aHoldStack.onCrafting(worldObj, aPlayer, slot(28).stackSize);
-			
-			if (aHoldStack.getItem() == Item.getItemFromBlock(Blocks.crafting_table)) aPlayer.addStat(AchievementList.buildWorkBench, 1);
-			if (aHoldStack.getItem() == Item.getItemFromBlock(Blocks.furnace)) aPlayer.addStat(AchievementList.buildFurnace, 1);
-			if (aHoldStack.getItem() == Item.getItemFromBlock(Blocks.enchanting_table)) aPlayer.addStat(AchievementList.enchantments, 1);
-			if (aHoldStack.getItem() == Item.getItemFromBlock(Blocks.bookshelf)) aPlayer.addStat(AchievementList.bookcase, 1);
-			if (aHoldStack.getItem() == Items.bread) aPlayer.addStat(AchievementList.makeBread, 1);
-			if (aHoldStack.getItem() == Items.cake) aPlayer.addStat(AchievementList.bakeCake, 1);
-			if (aHoldStack.getItem() instanceof ItemHoe) aPlayer.addStat(AchievementList.buildHoe, 1);
-			if (aHoldStack.getItem() instanceof ItemSword) aPlayer.addStat(AchievementList.buildSword, 1);
-			if (aHoldStack.getItem() instanceof ItemPickaxe) {
-				aPlayer.addStat(AchievementList.buildPickaxe, 1);
-				if (aHoldStack.getItem() != Items.wooden_pickaxe) aPlayer.addStat(AchievementList.buildBetterPickaxe, 1);
-			}
-		}
+
+            CraftingTableT1.handleAchievements(aPlayer, aHoldStack);
+        }
 		
 		MultiItemTool.LAST_TOOL_COORDS_BEFORE_DAMAGE = null;
 		

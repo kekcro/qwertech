@@ -297,9 +297,6 @@ public class CompostBinTileEntity extends TileEntityBase09FacingSingle implement
     {
         switch (this.getFacing())
         {
-            case CS.SIDE_Z_POS:
-                aBlock.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
-                return true;
             case CS.SIDE_Z_NEG:
                 aBlock.setBlockBounds(minX, minY, 1 - maxZ, maxX, maxY, 1 - minZ);
                 return true;
@@ -309,6 +306,7 @@ public class CompostBinTileEntity extends TileEntityBase09FacingSingle implement
             case CS.SIDE_X_NEG:
                 aBlock.setBlockBounds(1 - maxZ, minY, minX, 1 - minZ, maxY, maxX);
                 return true;
+            case CS.SIDE_Z_POS:
             default:
                 aBlock.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
                 return true;

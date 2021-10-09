@@ -1,6 +1,10 @@
 package com.kbi.qwertech.api.data;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class QTConfigs {
+	public static final Logger L = LogManager.getLogger("QwerTech");
 	public static boolean doMobScrapesDrop;
 	public static boolean slingshotGlass;
 	public static boolean slingshotExplode;
